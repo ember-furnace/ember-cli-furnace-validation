@@ -2,5 +2,9 @@
 'use strict';
 
 module.exports = {
-  name: 'ember-cli-furnace-validation'
+	name: 'furnace-validation',
+	
+	isDevelopingAddon: function() {
+		return true;
+	}
 };
