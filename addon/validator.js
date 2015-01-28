@@ -4,45 +4,45 @@ import Result from './result';
 export default Ember.Object.extend({
 	propertyName: null,
 		
-	_createContext: function(value,key,result,stack) {
+	_createContext: function(value,key,result) {
 		return {
-			value:value,
+			value:value,			
 			key: key || (value instanceof Ember.Object ? 'object' : 'value'),
+			path : key || (value instanceof Ember.Object ? 'object' : 'value'),
 			result : result || Result.create(),
-			stack : stack || Ember.A()
+			stack :  Ember.A(),
+			parent :  null
 		};
 	},
 	
-	_nestContext: function(context,property) {
+	_nestContext: function(context,key) {
 		// We are validating a property on an object. Cancel validation if it is not a valid object, the object validator should determine if this is valid or not  
 		if(!(context.value instanceof Ember.Object)) {
 			return null;
 		}		
-		return this._createContext(context.value.get(property),context.key+'.'+property,context.result,context.stack);
+		return {
+			value:context.value.get(key),			
+			key: key ,
+			name : context.key+"."+key,
+			path : context.path+"."+key,
+			result : context.result,
+			stack :  context.stack,
+			parent :  context
+		};
 	},
 	
-	validate : function(value,result) {
+	validate : function(value,key,result) {
 		Ember.assert('Result to append to should be an instance of Result',!result || (result instanceof Result));
-		var context=this._createContext(value,null,result);
+		var context=this._createContext(value,key,result);
 		return this._validate(context);
 	},
 		
 	_validate : function(context) {
-		var propertyName=this.get('propertyName');
-		var value=context.value;
-		var valueName=(value instanceof Ember.Object  ? value.constructor.toString() : value);
-		
-		if(propertyName) {		
-			context=this._nestContext(context,propertyName);
-			if(!context) {
-				return null;
-			}
-			valueName="'"+propertyName+"' on "+valueName;
-		}
+		var valueName=(context.value instanceof Ember.Object  ? context.value.constructor.toString() : context.value);
 		var validator=this;
 		return new Ember.RSVP.Promise(function(resolve,reject) {
 			try{
-				validator.call(context.value,context.key,context.result);
+				validator.call(context,context.value,context.result);
 				resolve(context.result);
 			}
 			catch(e) {
@@ -51,7 +51,7 @@ export default Ember.Object.extend({
 		},validator.constructor.toString()+" Validating "+valueName);
 	},
 	
-	call : function(value,key,result) {
+	call : function(context,value,result) {
 		
 	},
 	

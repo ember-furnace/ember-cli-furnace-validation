@@ -36,9 +36,10 @@ export default {
 					var options=validators[validator];
 					if(options) {
 						if(options===true) {
-							options={};
-						}
-						options.propertyName=key;
+							// It was indicated just to append this validator without any options.
+							// By passing null we can get a cached instance.
+							options=null;
+						}						
 					}
 					this._validators[key].push(this.validatorFor(validator,options));
 				}

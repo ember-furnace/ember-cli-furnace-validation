@@ -8,11 +8,11 @@ export default Validator.extend({
 	typeCheck : null,
 	
 	validators: Ember.computed(function() {
-		var ret = Ember.A();
+		var ret = {};
 		var self = this;
 		this.constructor.eachComputedProperty(function(name, meta) {
 			if (meta.type==='validator') {
-				ret.pushObjects(self.get(name));
+				ret[name]=self.get(name);
 			}
 		});
 		return ret;
@@ -24,36 +24,24 @@ export default Validator.extend({
 	},
 	
 	_validate: function(context) {		
-		var promises=[];
-		var nestedContext=context;
-		var propertyName=this.get('propertyName');
+		var promises=Ember.A();
 		
 		Ember.debug(this);
 		Ember.debug(context.value);
 		console.log(context);
 		
-	
+		var validators=this.get('validators');
+		for(var propertyName in validators) {
+			var nestedContext=this._nestContext(context,propertyName);
+			if(nestedContext) {
+				promises.pushObjects(validators[propertyName].invoke('_validate',nestedContext));
+			}
+		}
 		
-		
-		
-		if(propertyName) {
-			nestedContext=this._nestContext(context,propertyName);	
-			
-		} else {			
+		if(!context.stack.contains(context.value)) {
 			context.stack.push(context.value);
+			promises.pushObject(this._super(context));
 		}
-		
-		
-		if(nestedContext) {
-			// Check for circular reference
-			if(!propertyName || !context.stack.contains(nestedContext.value)) {
-				promises=this.get('validators').invoke('_validate',nestedContext);
-				context.stack.push(nestedContext.value);
-			} 
-		}
-		
-		
-		promises.push(this._super(context));
 		
 		var validator=this;
 		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations").then(function(values) {
@@ -63,12 +51,12 @@ export default Validator.extend({
 		},validator.constructor.toString()+" Validations resolved");		
 	},
 	
-	call : function(value,key,result) {
+	call : function(context,value,result) {
 		if(value){
 			if(!(value instanceof Ember.Object)) {
-				result.addError(key,'notObject');
+				result.addError(context,'notObject');
 			} else if(this.get('typeCheck') && !(value instanceof this.get('typeCheck'))) {
-				result.addError(key,'invalidType');
+				result.addError(context,'invalidType');
 			}
 		}
 	},
