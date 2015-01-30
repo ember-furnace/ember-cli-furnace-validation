@@ -15,13 +15,13 @@ export default Ember.Object.extend({
 		};
 	},
 	
-	_nestContext: function(context,key) {
+	_nestContext: function(context,key,value) {
 		// We are validating a property on an object. Cancel validation if it is not a valid object, the object validator should determine if this is valid or not  
 		if(!(context.value instanceof Ember.Object)) {
 			return null;
 		}		
 		return {
-			value:context.value.get(key),			
+			value:value || context.value.get(key),			
 			key: key ,
 			name : context.key+"."+key,
 			path : context.path+"."+key,
@@ -38,7 +38,6 @@ export default Ember.Object.extend({
 	},
 		
 	_validate : function(context) {
-		var valueName=(context.value instanceof Ember.Object  ? context.value.constructor.toString() : context.value);
 		var validator=this;
 		return new Ember.RSVP.Promise(function(resolve,reject) {
 			try{
@@ -48,11 +47,11 @@ export default Ember.Object.extend({
 			catch(e) {
 				reject(e);
 			}
-		},validator.constructor.toString()+" Validating "+valueName);
+		},validator.constructor.toString()+" Validating "+context.path);
 	},
 	
 	call : function(context,value,result) {
-		
+		Ember.assert("Did you forget to override the 'call' method in your validator? ("+this.toString()+")");
 	},
 	
 	validatorFor : Lookup

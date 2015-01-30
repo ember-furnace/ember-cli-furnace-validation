@@ -7,4 +7,4 @@ export default Ember.Object.extend({
 		return 'validation.'+this.type+'.'+this.message;
 	}
 	
-})
+});

@@ -4,13 +4,17 @@ export default Ember.Object.extend({
 	
 	_valid:true,
 	
-	_messages: {},
+	_messages: null,
 	
 	_errors: 0,
 	
 	_warnings: 0,
 	
 	_notices: 0,
+	
+	init : function() {
+		this.set('_messages', {});		
+	},
 	
 	setValid:function() {
 		this.set('_valid',true);
@@ -47,7 +51,7 @@ export default Ember.Object.extend({
 		return this;
 	},
 	
-	addMessage:function(context,message,type,attributes) {
+	addMessage:function(context,message,type,attributes) {		
 		if(!this._messages[context.path]) {
 			this._messages[context.path]=Ember.A();
 		}
@@ -110,15 +114,15 @@ export default Ember.Object.extend({
 	
 	getWarningCount:function(key) {
 		if(key){
-			this.getWarnings(key).length;
+			return this.getWarnings(key).length;
 		}
 		return this._warnings;
 	},
 	
 	getNoticeCount:function(key) {
 		if(key){
-			this.getNotices(key).length;
+			return this.getNotices(key).length;
 		}
 		return this._notices;
-	},
-})
+	}
+});

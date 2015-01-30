@@ -28,7 +28,7 @@ var getClass=function(container,name) {
 		Cache.classes[name]=Class;
 	}
 	return Class;
-}
+};
 
 var getInstance=function(container,name,options) {
 	var Instance,Class=getClass(container,name);
@@ -44,7 +44,7 @@ var getInstance=function(container,name,options) {
 		}		
 	}
 	return Instance;
-}
+};
 
 var getName=function(container,object) {
 	var objectName=null;
@@ -53,10 +53,10 @@ var getName=function(container,object) {
 		objectName=object;
 	}
 	else if(object instanceof Ember.Route) {
-		objectName=object.routeName
+		objectName=object.routeName;
 	}
 	else if(Ember.ControllerMixin.detect(object)) {
-		var tmpName = object.constructor.toString()
+		var tmpName = object.constructor.toString();
 		var index=tmpName.indexOf(':');
 		objectName=tmpName.substring(index+1,tmpName.indexOf(':',index+1)).replace(/\//g,'.');	
 	} else if(object instanceof Ember.Object) {
@@ -69,9 +69,11 @@ var getName=function(container,object) {
 	Ember.assert('Unable to determine validator for type '+(typeof object),objectName);
 
 	return objectName;
-}
+};
 
 export default function(object,options) {
+	if(object===undefined)
+		object=this;
 	var container=this.get('container');
 	var name=getName(container,object);
 	return getInstance(container,name,options);
