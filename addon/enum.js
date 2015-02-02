@@ -11,10 +11,10 @@ export default Validator.extend({
 			for(var name in value) {
 				var options = value[name];
 				if(options===true) {
-					options=null
+					options=null;
 				}
 				validators.pushObject(this.validatorFor(name,options));
-			};
+			}
 			return validators;		
 		}
 		else {

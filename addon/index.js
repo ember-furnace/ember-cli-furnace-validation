@@ -23,7 +23,7 @@ var getMeta=function(validators,type) {
 	type=type || 'validation';
 	return {
 		type: type,
-		options:validators
+		validators:validators
 	};
 };
 
@@ -34,7 +34,7 @@ var getComputed=function(validators) {
 		if(!this._validators[key]) {
 			this._validators[key]=Ember.A();
 			var meta = this.constructor.metaForProperty(key);
-			var validators=meta.options;
+			var validators=meta.validators;
 			for(var validator in validators) {
 				var options=validators[validator];
 				if(options) {
@@ -59,18 +59,21 @@ export default {
 	
 	Object: ObjectValidator,
 	
-	list : function(listValidators,itemValidators) {
-		var validators=getValidators(listValidators);
-		if(!validators)
-			validators={};
-		
-		if(itemValidators) {
-			validators['enum']=getValidators(itemValidators);
+	list : function(validators,options) {
+		var listValidators={};
+		if(validators) {
+			listValidators=getValidators(validators,options);
 		}
+		var meta = getMeta(listValidators);
 		
-		var meta = getMeta(validators,'validation');
-		
-		return getComputed().meta(meta).readOnly();
+		var list = getComputed().meta(meta);
+		list.val = function(validators,options) {
+			var itemValidators=this._meta.validators || {};
+			itemValidators['enum']=getValidators(validators,options);
+			var meta = getMeta(itemValidators);
+			return this.meta(meta);
+		};
+		return list;
 	},
 	
 	val : function(validators,options) {		

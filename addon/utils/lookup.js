@@ -2,11 +2,6 @@ import Ember from 'ember';
 
 var Cache={classes : {},instances:{}};
 
-//
-//if (get(instance, 'namespace.LOG_ACTIVE_GENERATION')) {
-//    Ember.Logger.info("generated -> " + fullName, { fullName: fullName });
-//  }
-
 var getClass=function(container,name) {
 	var Class=Cache.classes[name];
 	if(!Class) {

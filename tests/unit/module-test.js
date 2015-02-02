@@ -29,6 +29,6 @@ test("Validator generation", function( ) {
 	
 	var validators=Validation.val({property : true,
 									object: true});
-	ok(validators instanceof Ember.ComputedProperty,'No validators?');
+	ok(validators instanceof Ember.ComputedProperty,'Check if validators register');
 
 });

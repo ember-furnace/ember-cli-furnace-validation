@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { initialize } from 'dummy/initializers/validation';
+import { initialize } from 'dummy/initializers/furnace-validation';
 
 var container, application;
 

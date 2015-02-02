@@ -74,6 +74,7 @@ test("Nested models with circular reference", function( ) {
 											bestFriend:Model});
 				
 		Model.set('bestFriend',Model2);
+		Model2.set('bestFriend',Model);
 	});
 
 	Validator=Model.validatorFor();
@@ -122,9 +123,11 @@ test("Nested models in a list with circular reference", function( ) {
 		Model=Store.createRecord('person',{firstName: 'Adrian',
 											lastName: 'Anderson'});
 		Model2=Store.createRecord('person',{firstName: 'Brian',
-											lastName: ''});
+											lastName: '',
+											});
 		
 		Model.get('friends').pushRecord(Model2);
+		Model2.get('friends').pushRecord(Model);
 	});
 
 	Validator=Model.validatorFor();

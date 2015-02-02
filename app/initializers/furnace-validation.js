@@ -9,6 +9,6 @@ export function initialize(container, application) {
 };
 
 export default {
-	name: 'validation',
+	name: 'furnace-validation',
 	initialize: initialize
 };
