@@ -1,6 +1,14 @@
 import Ember from 'ember';
 export default Ember.Object.extend({
-	type:'error',
+	
+	key: null,
+	
+	name: null,
+	
+	path: null,
+	
+	type:'unknown',
+	
 	message: 'unknown',
 	
 	toString: function() {

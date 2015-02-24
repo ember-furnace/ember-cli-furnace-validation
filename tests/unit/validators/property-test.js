@@ -21,10 +21,12 @@ test("Create a validator", function( ) {
 	ok(Validator instanceof PropertyValidator, 'Check instance');
 	
 	// The PropertyValidator is abstract. Trying to validate with it should throw an assertion error
-	Validator.validate("test").then(function(result) {
+	try {
+		Validator.validate("test");
 		ok(false,'Could validate');		
-	}).catch(function(e) {
+	}
+	catch(e) {
 		ok(true,'Could not validate');
-	});
+	}
 		
 });

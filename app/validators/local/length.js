@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import Validator from 'furnace-validation/property';
+import Validator from 'furnace-validation/validators/property';
 
 export default Validator.extend({
 	min: false,
@@ -7,6 +7,9 @@ export default Validator.extend({
 	exact : false,
 	
 	call : function(context,value,result) {
+		if(Ember.isBlank(value)) {			
+			return;
+		}
 		switch(typeof value) {
 		
 		case 'undefined':

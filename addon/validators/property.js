@@ -1,5 +1,5 @@
-import Validator from './validator';
+import Abstract from './abstract';
 
-export default Validator.extend({
+export default Abstract.extend({
 	
 });

@@ -1,9 +1,10 @@
-import Validator from './validator';
+import Promise from './promise';
 import Ember from 'ember';
-import Lookup from './utils/lookup';
 
-export default Validator.extend({
+export default Promise.extend({
 	_validators : null,
+	
+	_observers : null,
 	
 	typeCheck : null,
 	
@@ -20,7 +21,8 @@ export default Validator.extend({
 	
 	init: function() {
 		this._super();	
-		this._validators=Ember.A();
+		this._validators={};
+		this.get('validators');
 	},
 	
 	_validate: function(context) {		
@@ -32,9 +34,9 @@ export default Validator.extend({
 			context.stack.push(context.value);
 			var validators=this.get('validators');
 			for(var propertyName in validators) {
-				var nestedContext=this._nestContext(context,propertyName);
+				var nestedContext=context.nest(propertyName);
 				if(nestedContext) {
-					promises.pushObjects(validators[propertyName].invoke('_validate',nestedContext));
+					promises.pushObject(validators[propertyName]._validate(nestedContext));
 				}
 			}
 			promises.pushObject(this._super(context));
@@ -46,6 +48,21 @@ export default Validator.extend({
 		},function(e) {
 			return e;
 		},validator.constructor.toString()+" Validations resolved");		
+	},
+	
+	_validateProperty:function(propertyName,context) {
+		return this.get('validators.'+propertyName).invoke('_validate',context);
+	},
+	
+		
+	_observe : function(observer) {
+//		console.log('Validator _observer');
+//		Ember.debug(this);
+		this._super(observer);
+		var validators=this.get('validators');
+		for(var propertyName in validators) {
+			observer._observe(propertyName,validators[propertyName]);
+		}
 	},
 	
 	call : function(context,value,result) {

@@ -1,7 +1,8 @@
-import Validator from './validator';
-import ObjectValidator from './object';
-import PropertyValidator from './property';
-import EnumValidator from './enum';
+import ObjectValidator from './validators/object';
+import PropertyValidator from './validators/property';
+import PromiseValidator from './validators/promise';
+import EnumValidator from './validators/enum';
+import CollectionValidator from './validators/collection';
 import Ember from 'ember';
 
 var getValidators=function(validators,options) {
@@ -32,7 +33,7 @@ var getComputed=function(validators) {
 		Ember.assert("You have assigned attribute validation to something thats not an ObjectValidator",this instanceof ObjectValidator);
 		
 		if(!this._validators[key]) {
-			this._validators[key]=Ember.A();
+			this._validators[key]=CollectionValidator.create();
 			var meta = this.constructor.metaForProperty(key);
 			var validators=meta.validators;
 			for(var validator in validators) {
@@ -59,7 +60,9 @@ export default {
 	
 	Object: ObjectValidator,
 	
-	list : function(validators,options) {
+	Promise: PromiseValidator,
+	
+	enum : function(validators,options) {
 		var listValidators={};
 		if(validators) {
 			listValidators=getValidators(validators,options);

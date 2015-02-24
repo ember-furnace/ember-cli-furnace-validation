@@ -7,7 +7,7 @@ export default Validation.Object.extend( {
 	
 	bestFriend: Validation.val('person'),
 	
-	friends: Validation.list().val('person'),
+	friends: Validation.enum().val('person'),
 	
 	address: Validation.val('address'),
 });

@@ -17,7 +17,8 @@ var getClass=function(container,name) {
 			} else if(Remote) {
 				Class=Remote;
 			} else {
-				Ember.assert('No validator for '+name);
+				Ember.warn('No validator for '+name);
+				return null;
 			}
 		}
 		Cache.classes[name]=Class;
@@ -27,7 +28,9 @@ var getClass=function(container,name) {
 
 var getInstance=function(container,name,options) {
 	var Instance,Class=getClass(container,name);
-
+	if(Class===null) {
+		return null;
+	}
 	// If we get options, the validator is uniquely configured for its context so create a new instance
 	if(options) {
 		 Instance=Class.create(options);

@@ -2,62 +2,77 @@ import Ember from 'ember';
 import Message from './message';
 export default Ember.Object.extend({
 	
-	_valid:true,
+	valid:false,
+	
+	messages: Ember.computed.readOnly('_messages'),
 	
 	_messages: null,
 	
-	_errors: 0,
+	_valCount: 0,
 	
-	_warnings: 0,
+	_valCountIncrease : function() {
+		this._valCount++;
+	},
 	
-	_notices: 0,
+	_valCountDecrease : function() {
+		this._valCount--;
+		if(this._valCount===0) {
+			if(this.getErrorCount()===0) {
+				this.set('valid',true);
+			} else {
+				this.set('valid',false);
+			}
+		}
+	},
 	
 	init : function() {
 		this.set('_messages', {});		
 	},
 	
 	setValid:function() {
-		this.set('_valid',true);
+		this.set('valid',true);
 		return this;
 	},
 	
 	setInvalid:function() {
-		this.set('_valid',false);
+		this.set('valid',false);
 		return this;
 	},
 	
 	isValid:function() {
-		return this.get('_valid');
+		return this.get('valid');
+	},
+	
+	reset:function(context) {
+		this._messages[context.path]=Ember.A();		
 	},
 	
 	addError:function(context,message,attributes) {
 		this.setInvalid();
 		this.addMessage(context,message,'error',attributes);
-		this._errors++;
 		return this;
 	},
 	
 	addWarning:function(context,message,attributes) {
 		this.setInvalid();
 		this.addMessage(context,message,'warning',attributes);
-		this._warnings++;
 		return this;
 	},
 	
 	addNotice:function(context,message,attributes) {
 		this.setInvalid();
 		this.addMessage(context,message,'notice',attributes);
-		this._notices++;
 		return this;
 	},
 	
-	addMessage:function(context,message,type,attributes) {		
+	addMessage:function(context,message,type,attributes) {
 		if(!this._messages[context.path]) {
 			this._messages[context.path]=Ember.A();
 		}
 		this._messages[context.path].push(Message.create({
 				message: message,
 				key: context.key,
+				path: context.path,
 				name: context.name,
 				type:type,
 				attributes:attributes
@@ -69,6 +84,14 @@ export default Ember.Object.extend({
 		var ret=Ember.A();
 		for(var key in this._messages) {
 			ret.pushObjects(this._messages[key]);
+		}
+		return ret;
+	},
+	
+	getKeys: function() {
+		var ret=Ember.A();
+		for(var key in this._messages) {
+			ret.pushObject(key);
 		}
 		return ret;
 	},
@@ -106,23 +129,14 @@ export default Ember.Object.extend({
 	},
 	
 	getErrorCount:function(key) {
-		if(key) {
-			return this.getErrors(key).length;
-		}
-		return this._errors;
+		return this.getErrors(key).length;
 	},
 	
 	getWarningCount:function(key) {
-		if(key){
-			return this.getWarnings(key).length;
-		}
-		return this._warnings;
+		return this.getWarnings(key).length;
 	},
 	
 	getNoticeCount:function(key) {
-		if(key){
-			return this.getNotices(key).length;
-		}
-		return this._notices;
+		return this.getNotices(key).length;
 	}
 });

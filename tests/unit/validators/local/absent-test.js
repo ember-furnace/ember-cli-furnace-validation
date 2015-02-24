@@ -16,32 +16,28 @@
 
 test("Check validator", function( ) {
 	Validator = lookup(App,'absent');
+	var result;
 	
 	ok(Validator instanceof PropertyValidator, 'Check instance');
 	
-	Validator.validate(null).then(function(result) {
-		ok(result.isValid(),'Check null valid');	
-		ok(result.getMessages().length===0,'Check messages length');
-	});
-	Validator.validate(undefined).then(function(result) {
-		ok(result.isValid(),'Check undefined valid');		
-	});
+	result = Validator.validate(null);
+	ok(result.isValid(),'Check null valid');	
+	ok(result.getMessages().length===0,'Check messages length');
 	
-	Validator.validate("").then(function(result) {
-		ok(result.isValid(),'Check empty string valid');		
-	});
+	result = Validator.validate(undefined);
+	ok(result.isValid(),'Check undefined valid');		
 	
-	Validator.validate(0).then(function(result) {
-		ok(!result.isValid(),'Check 0 invalid');
-		ok(result.getMessages().length===1,'Check messages length');		
-		ok(result.getMessages('value')[0].message==='present','Check message name');
-	});
+	result = Validator.validate("");
+	ok(result.isValid(),'Check empty string valid');		
 	
-	Validator.validate("test").then(function(result) {
-		ok(!result.isValid(),'Check string invalid');		
-	});
+	result = Validator.validate(0);
+	ok(!result.isValid(),'Check 0 invalid');
+	ok(result.getMessages().length===1,'Check messages length');		
+	ok(result.getMessages('value')[0].message==='present','Check message name');
 	
-	Validator.validate({}).then(function(result) {
-		ok(!result.isValid(),'Check object invalid');		
-	});
+	result = result = Validator.validate("test");
+	ok(!result.isValid(),'Check string invalid');		
+	
+	result = Validator.validate({});
+	ok(!result.isValid(),'Check object invalid');		
 });

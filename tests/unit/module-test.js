@@ -21,7 +21,7 @@ test("Interface", function( ) {
 	equal(Validation.Object,ObjectValidator,"Expected ObjectValidator class");
 	equal(Validation.Property,PropertyValidator,"Expected PropertyValidator class");
 	ok(typeof Validation.val==='function',"Expected val function");
-	ok(typeof Validation.list==='function',"Expected list function");
+	ok(typeof Validation.enum==='function',"Expected list function");
 });
 
 test("Validator generation", function( ) {

@@ -15,33 +15,30 @@
 });
 
 test("Check validator", function( ) {
+	var result;
+	
 	Validator = lookup(App,'required');
 	
 	ok(Validator instanceof PropertyValidator, 'Check instance');
 	
-	Validator.validate(null).then(function(result) {
-		ok(!result.isValid(),'Check null invalid');
-		ok(result.getMessages().length===1,'Check messages length');		
-		ok(result.getMessages('value')[0].message==='blank','Check message name');
-	});
-	Validator.validate(undefined).then(function(result) {
-		ok(!result.isValid(),'Check undefined invalid');		
-	});
+	result = Validator.validate(null);
+	ok(!result.isValid(),'Check null invalid');
+	ok(result.getMessages().length===1,'Check messages length');		
+	ok(result.getMessages('value')[0].message==='blank','Check message name');
+
+	result = Validator.validate(undefined);
+	ok(!result.isValid(),'Check undefined invalid');		
 	
-	Validator.validate("").then(function(result) {
-		ok(!result.isValid(),'Check empty string invalid');		
-	});
+	result = Validator.validate("");
+	ok(!result.isValid(),'Check empty string invalid');		
 	
-	Validator.validate(0).then(function(result) {
-		ok(result.isValid(),'Check 0 valid');
-		ok(result.getMessages().length===0,'Check messages length');	
-	});
+	result = Validator.validate(0);
+	ok(result.isValid(),'Check 0 valid');
+	ok(result.getMessages().length===0,'Check messages length');	
 	
-	Validator.validate("test").then(function(result) {
-		ok(result.isValid(),'Check string valid');		
-	});
+	result = Validator.validate("test");
+	ok(result.isValid(),'Check string valid');		
 	
-	Validator.validate({}).then(function(result) {
-		ok(result.isValid(),'Check object valid');		
-	});
+	result = Validator.validate({});
+	ok(result.isValid(),'Check object valid');		
 });

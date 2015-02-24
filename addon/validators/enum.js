@@ -1,6 +1,6 @@
-import Validator from 'furnace-validation/object';
+import Object from './object';
 import Ember from 'ember';
-export default Validator.extend({
+export default Object.extend({
 	
 	_validators: null,
 	
@@ -25,11 +25,11 @@ export default Validator.extend({
 	_validate : function(context) {
 		var promises=Ember.A();
 		var validator=this;
-		if(context.value) {
+		if(context.value) {			
 			Ember.assert('The enum validator received a value that is not enumerable!',Ember.Enumerable.detect(context.value));
 			var validators=validator.get('validators');				
 			context.value.forEach(function(item,index) {
-				var nestedContext=validator._nestContext(context,index,item);
+				var nestedContext=context.nest(index,item);
 				if(nestedContext) {
 					promises.pushObjects(validators.invoke('_validate',nestedContext));
 				}
