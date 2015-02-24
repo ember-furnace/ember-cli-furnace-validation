@@ -14,6 +14,8 @@ export default function startApp(attrs) {
     application.setupForTesting();
     application.injectTestHelpers();
   });
-
+  application.getContainer=function() {
+	  return this.__container__;
+  };
   return application;
 }

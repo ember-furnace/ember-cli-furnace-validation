@@ -1,7 +1,7 @@
 {
   "name": "ember-cli-furnace-validation",
   "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "The Furnance Validation Addon.",
   "directories": {
     "doc": "doc",
     "test": "tests"
