@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import translate from './utils/i18n';
+
 export default Ember.Object.extend({
 	
 	key: null,
@@ -12,7 +14,7 @@ export default Ember.Object.extend({
 	message: 'unknown',
 	
 	toString: function() {
-		return 'validation.'+this.type+'.'+this.message;
+		return translate('validation.'+this.type+'.'+this.message);
 	}
 	
 });
