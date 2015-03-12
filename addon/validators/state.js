@@ -1,0 +1,112 @@
+import Promise from './promise';
+import Ember from 'ember';
+
+var State= Promise.extend({
+	_validators : null,
+	
+	_observers : null,
+	
+	typeCheck : null,
+	
+	_stateFn : null,
+	
+	_stateDeps : null,
+	
+	validators: Ember.computed(function() {
+		var ret = {};
+		var self = this;
+		this.constructor.eachComputedProperty(function(name, meta) {
+			if (meta.type==='validation') {
+				ret[name]=self.get(name);
+			}
+		});
+		return ret;
+	}).readOnly(),
+	
+	init: function() {
+		this._super();	
+		this._validators={};
+		this.get('validators');		
+	},
+	
+	_hasState:function(context,state) {
+		Ember.assert('No method to determine object state. Did you forget to call "cond()" after extending?',typeof this._stateFn==='function');
+		var states=this._stateFn(context.value,context);
+		if(!Ember.isArray(states)) {
+			states=[states];
+		}	
+		return states.indexOf(state)>-1;
+	},
+	
+	_getDeps:function() {
+		if(!this._stateDeps) {
+			return [];
+		}
+		return this._stateDeps.split(',');
+	},
+	
+	_validate: function(context) {		
+		var promises=Ember.A();
+		Ember.assert('The state validator can\'t validate enumerables',!Ember.Enumerable.detect(context.value));
+		var validators=this.get('validators');
+		for(var propertyName in validators) {
+			if(this._hasState(context,propertyName)) {
+				promises.pushObject(validators[propertyName]._validate(context));
+			}
+		}
+	
+		var validator=this;
+		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function(values) {
+			return context.result;
+		},function(e) {
+			return e;
+		},validator.constructor.toString()+" Validations resolved");		
+	},
+	
+	_validateProperty:function(propertyName,context) {
+		return this.get('validators.'+propertyName).invoke('_validate',context);
+	},
+	
+		
+	_observe : function(observer) {
+		this._super(observer);
+		var validators=this.get('validators');
+		for(var propertyName in validators) {
+			if(this._hasState(observer._context,propertyName)) {
+				observer._observe(validators[propertyName]);
+			}
+		}
+		var deps=this._getDeps();
+		for(var i=0;i<deps.length;i++) {			
+			observer._observeKey(deps[i]);			
+		}
+	},
+	
+});
+
+State.reopenClass({
+	cond : function() {
+		if(arguments.length===1) {
+			Ember.assert("When passing 1 argument to cond() the first argument is expected to be a single property to determine state",typeof arguments[0]==='string' && arguments[0].split(',').length===1);
+			
+			this.reopen({
+				_stateFn: function(object) {
+					return object.get(this._stateDeps);
+				},
+				_stateDeps: arguments[0]
+			});
+		}
+		if(arguments.length===2) {
+			Ember.assert("When passing 2 arguments to cond() the first argument is expected to be a function to determine state",typeof arguments[0]==='function');
+			Ember.assert("When passing 2 arguments to cond() the second argument is expected to be a string defining dependent attributes",typeof arguments[1]==='string');
+			
+			this.reopen({
+				_stateFn: arguments[0],
+				_stateDeps: arguments[1]
+			});
+		}
+		return this;
+	}
+})
+
+export default State;

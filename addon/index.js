@@ -1,11 +1,12 @@
 import ObjectValidator from './validators/object';
+import StateValidator from './validators/state';
 import PropertyValidator from './validators/property';
 import PromiseValidator from './validators/promise';
 import EnumValidator from './validators/enum';
 import CollectionValidator from './validators/collection';
 import Ember from 'ember';
 
-var getValidators=function(validators,options) {
+var getValidators=function(validators,options) {	
 	if(typeof validators === 'string') {
 		var name=validators;
 		validators={};
@@ -28,9 +29,9 @@ var getMeta=function(validators,type) {
 	};
 };
 
-var getComputed=function(validators) {
+var getComputed=function() {
 	return Ember.computed(function(key) {
-		Ember.assert("You have assigned attribute validation to something thats not an ObjectValidator",this instanceof ObjectValidator);
+		Ember.assert("You have an assigned attribute validation to something thats not an ObjectValidator",(this instanceof ObjectValidator || this instanceof StateValidator));
 		
 		if(!this._validators[key]) {
 			this._validators[key]=CollectionValidator.create();
@@ -45,11 +46,23 @@ var getComputed=function(validators) {
 						options=null;
 					}						
 				}
-				if(validator==='enum') {
-					this._validators[key].push(EnumValidator.create({validators : options}));
-				} else {
-					this._validators[key].push(this.validatorFor(validator,options));
+				var _validator;
+				switch(validator) {
+					case 'enum':
+						_validator=EnumValidator.create({validators : options});
+						break;
+					case 'state':
+						_validator=StateValidator.extend(options).create({container: this.get('container')});
+						break;
+					case 'object':
+						_validator=ObjectValidator.extend(options).create({container: this.get('container')});
+						break;
+					default:
+						_validator=this.validatorFor(validator,options);
+						break;
 				}
+				this._validators[key].push(_validator);
+				
 			}
 		}			
 		return this._validators[key];
@@ -59,6 +72,8 @@ export default {
 	Property: PropertyValidator,
 	
 	Object: ObjectValidator,
+	
+	State: StateValidator,
 	
 	Promise: PromiseValidator,
 	
@@ -79,11 +94,21 @@ export default {
 		return list;
 	},
 	
-	val : function(validators,options) {		
+	object: function(options) {
+		 return this.val('object' ,options);
+	},
+	
+	state: function(fn,deps,options) {		
+		options=options || {};
+		options._stateFn=fn;
+		options._stateDeps=deps;
+		return this.val('state' ,options);
+	},
+	
+	val : function(validators,options) {
 		validators=getValidators(validators,options);
 		
 		var meta = getMeta(validators);
-		
 		return getComputed().meta(meta).readOnly();
 	}
 };

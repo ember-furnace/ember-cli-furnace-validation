@@ -43,8 +43,22 @@ export default Ember.Object.extend({
 		return this.get('valid');
 	},
 	
-	reset:function(context) {
-		this._messages[context.path]=Ember.A();		
+	reset:function(context,deep) {
+		if(context) {
+			if(deep) {
+				for(var path in this._messages) {
+					if(path.substr(0,context.path.length)===context.path) {
+						this._messages[path]=Ember.A();
+					}
+				}
+				
+			}
+			else {
+				this._messages[context.path]=Ember.A();
+			}
+		} else {
+			this.set('_messages', {});		
+		}
 	},
 	
 	addError:function(context,message,attributes) {

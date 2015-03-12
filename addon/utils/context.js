@@ -14,7 +14,11 @@ var nestContext= function(key,value) {
 		result : this.result,
 		stack :  this.stack,
 		parent :  this,
-		nest: nestContext
+		nest: nestContext,
+		resetStack : function() {
+			this.stack.splice(0,this.stack.length);
+		}
+		
 	};
 	return nestedContext;
 }
@@ -27,7 +31,10 @@ var createContext  = function(value,key,result) {
 		result : result || Result.create(),
 		stack :  Ember.A(),		
 		parent :  null,
-		nest: nestContext
+		nest: nestContext,
+		resetStack : function() {
+			this.stack.splice(0,this.stack.length);
+		}
 	};
 };
 
