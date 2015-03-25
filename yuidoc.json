@@ -1,0 +1,12 @@
+{
+  "name": "ember-cli-furnace-validation",
+  "description": "The Furnance Validation Addon.",
+  "version": "0.0.0",
+  "options": {
+    "paths": [
+      "addon"
+    ],
+    "exclude": "vendor",
+    "outdir": "docs"
+  }
+}

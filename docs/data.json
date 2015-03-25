@@ -1,0 +1,883 @@
+{
+    "project": {
+        "name": "ember-cli-furnace-validation",
+        "description": "The Furnance Validation Addon.",
+        "version": "0.0.0.07142d01"
+    },
+    "files": {
+        "addon/validators/abstract.js": {
+            "name": "addon/validators/abstract.js",
+            "modules": {},
+            "classes": {
+                "Furnace.Validation.Abstract": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace.Validation": 1
+            }
+        },
+        "addon/validators/collection.js": {
+            "name": "addon/validators/collection.js",
+            "modules": {},
+            "classes": {
+                "Furnace.Validation.Collection": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace.Validation": 1
+            }
+        },
+        "addon/validators/enum.js": {
+            "name": "addon/validators/enum.js",
+            "modules": {},
+            "classes": {
+                "Furnace.Validation.Enum": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace.Validation": 1
+            }
+        },
+        "addon/validators/object.js": {
+            "name": "addon/validators/object.js",
+            "modules": {},
+            "classes": {
+                "Furnace.Validation.Object": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace.Validation": 1
+            }
+        },
+        "addon/validators/promise.js": {
+            "name": "addon/validators/promise.js",
+            "modules": {},
+            "classes": {
+                "Furnace.Validation.Promise": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace.Validation": 1
+            }
+        },
+        "addon/validators/property.js": {
+            "name": "addon/validators/property.js",
+            "modules": {},
+            "classes": {
+                "Furnace.Validation.Property": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace.Validation": 1
+            }
+        },
+        "addon/validators/state.js": {
+            "name": "addon/validators/state.js",
+            "modules": {},
+            "classes": {
+                "Furnace.Validation.State": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace.Validation": 1
+            }
+        },
+        "addon/index.js": {
+            "name": "addon/index.js",
+            "modules": {
+                "furnace-validaton": 1
+            },
+            "classes": {
+                "Furnace.Validation": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace": 1
+            }
+        },
+        "addon/message.js": {
+            "name": "addon/message.js",
+            "modules": {},
+            "classes": {
+                "Furnace.Validation.Message": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace.Validation": 1
+            }
+        },
+        "addon/result.js": {
+            "name": "addon/result.js",
+            "modules": {},
+            "classes": {
+                "Furnace.Validation.Result": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace.Validation": 1
+            }
+        }
+    },
+    "modules": {
+        "furnace": {
+            "name": "furnace",
+            "submodules": {
+                "furnace-validaton": 1
+            },
+            "classes": {
+                "Furnace.Validation.Abstract": 1,
+                "Furnace.Validation.Collection": 1,
+                "Furnace.Validation.Enum": 1,
+                "Furnace.Validation.Object": 1,
+                "Furnace.Validation.Promise": 1,
+                "Furnace.Validation.Property": 1,
+                "Furnace.Validation.State": 1,
+                "Furnace.Validation": 1,
+                "Furnace.Validation.Message": 1,
+                "Furnace.Validation.Result": 1
+            },
+            "fors": {},
+            "namespaces": {
+                "Furnace": 1,
+                "Furnace.Validation": 1
+            },
+            "file": "addon/result.js",
+            "line": 4
+        },
+        "furnace-validaton": {
+            "name": "furnace-validaton",
+            "submodules": {},
+            "classes": {
+                "Furnace.Validation": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {
+                "Furnace": 1
+            },
+            "module": "furnace",
+            "namespace": "",
+            "file": "addon/index.js",
+            "line": 91,
+            "description": "Provides validation features."
+        }
+    },
+    "classes": {
+        "Furnace.Validation.Abstract": {
+            "name": "Furnace.Validation.Abstract",
+            "shortname": "Furnace.Validation.Abstract",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "furnace",
+            "namespace": "Furnace.Validation",
+            "file": "addon/validators/abstract.js",
+            "line": 7,
+            "description": "Base validation class",
+            "extends": "Ember.Object"
+        },
+        "Furnace.Validation.Collection": {
+            "name": "Furnace.Validation.Collection",
+            "shortname": "Furnace.Validation.Collection",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "furnace",
+            "namespace": "Furnace.Validation",
+            "file": "addon/validators/collection.js",
+            "line": 4,
+            "description": "Collection of validators, wrapping different validators into one promise",
+            "extends": "Furnace.Validation.Promise"
+        },
+        "Furnace.Validation.Enum": {
+            "name": "Furnace.Validation.Enum",
+            "shortname": "Furnace.Validation.Enum",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "furnace",
+            "namespace": "Furnace.Validation",
+            "file": "addon/validators/enum.js",
+            "line": 4,
+            "description": "Enumerable validator",
+            "extends": "Furnace.Validation.Object"
+        },
+        "Furnace.Validation.Object": {
+            "name": "Furnace.Validation.Object",
+            "shortname": "Furnace.Validation.Object",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "furnace",
+            "namespace": "Furnace.Validation",
+            "file": "addon/validators/object.js",
+            "line": 4,
+            "description": "Object validator",
+            "extends": "Furnace.Validation.Promise"
+        },
+        "Furnace.Validation.Promise": {
+            "name": "Furnace.Validation.Promise",
+            "shortname": "Furnace.Validation.Promise",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "furnace",
+            "namespace": "Furnace.Validation",
+            "file": "addon/validators/promise.js",
+            "line": 4,
+            "description": "Promise validator",
+            "extends": "Furnace.Validation.Abstract"
+        },
+        "Furnace.Validation.Property": {
+            "name": "Furnace.Validation.Property",
+            "shortname": "Furnace.Validation.Property",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "furnace",
+            "namespace": "Furnace.Validation",
+            "file": "addon/validators/property.js",
+            "line": 3,
+            "description": "Property validator",
+            "extends": "Furnace.Validation.Abstract"
+        },
+        "Furnace.Validation.State": {
+            "name": "Furnace.Validation.State",
+            "shortname": "Furnace.Validation.State",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "furnace",
+            "namespace": "Furnace.Validation",
+            "file": "addon/validators/state.js",
+            "line": 4,
+            "description": "State validator",
+            "extends": "Furnace.Validation.Promise"
+        },
+        "Furnace.Validation": {
+            "name": "Furnace.Validation",
+            "shortname": "Furnace.Validation",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "furnace",
+            "submodule": "furnace-validaton",
+            "namespace": "Furnace",
+            "file": "addon/index.js",
+            "line": 91,
+            "description": "Validation namespace",
+            "static": 1
+        },
+        "Furnace.Validation.Message": {
+            "name": "Furnace.Validation.Message",
+            "shortname": "Furnace.Validation.Message",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "furnace",
+            "namespace": "Furnace.Validation",
+            "file": "addon/message.js",
+            "line": 2,
+            "description": "Message",
+            "extends": "Ember.Object"
+        },
+        "Furnace.Validation.Result": {
+            "name": "Furnace.Validation.Result",
+            "shortname": "Furnace.Validation.Result",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "furnace",
+            "namespace": "Furnace.Validation",
+            "file": "addon/result.js",
+            "line": 4,
+            "description": "Validation result"
+        }
+    },
+    "classitems": [
+        {
+            "file": "addon/validators/abstract.js",
+            "line": 16,
+            "description": "Run validation",
+            "itemtype": "method",
+            "name": "validate",
+            "params": [
+                {
+                    "name": "value",
+                    "description": "Value to be validated",
+                    "type": "Mixed"
+                },
+                {
+                    "name": "key",
+                    "description": "(optional)  Key of the validated value",
+                    "type": "String"
+                },
+                {
+                    "name": "result",
+                    "description": "(optional)  Instance of a result object",
+                    "type": "Furnace.Validation.Result"
+                }
+            ],
+            "return": {
+                "description": "Returns validation result object or promise",
+                "type": "Furnace.Validation.Result|Ember.RSVP.Promise"
+            },
+            "class": "Furnace.Validation.Abstract",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/validators/abstract.js",
+            "line": 31,
+            "description": "Run validation based upon context",
+            "itemtype": "method",
+            "name": "_validate",
+            "access": "protected",
+            "tagname": "",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "Validation context",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Returns validation result object or promise",
+                "type": "Furnace.Validation.Result|Ember.RSVP.Promise"
+            },
+            "class": "Furnace.Validation.Abstract",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/validators/abstract.js",
+            "line": 46,
+            "description": "Actual validation logic",
+            "itemtype": "method",
+            "name": "call",
+            "abstract": "",
+            "params": [
+                {
+                    "name": "context",
+                    "description": "Validation context",
+                    "type": "Object"
+                },
+                {
+                    "name": "value",
+                    "description": "Validation context",
+                    "type": "Mixed"
+                },
+                {
+                    "name": "result",
+                    "description": "Validation result object instance",
+                    "type": "Furnace.Validation.Result"
+                }
+            ],
+            "class": "Furnace.Validation.Abstract",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/validators/collection.js",
+            "line": 13,
+            "description": "Validator instances",
+            "itemtype": "property",
+            "name": "_validators",
+            "access": "protected",
+            "tagname": "",
+            "class": "Furnace.Validation.Collection",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/validators/collection.js",
+            "line": 20,
+            "description": "Validator initialization",
+            "itemtype": "method",
+            "name": "init",
+            "access": "protected",
+            "tagname": "",
+            "class": "Furnace.Validation.Collection",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/validators/collection.js",
+            "line": 29,
+            "description": "Add validator to the collection",
+            "itemtype": "method",
+            "name": "push",
+            "params": [
+                {
+                    "name": "validator",
+                    "description": "validator to add",
+                    "type": "Abstract"
+                }
+            ],
+            "class": "Furnace.Validation.Collection",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/validators/object.js",
+            "line": 13,
+            "description": "Validator instances",
+            "itemtype": "property",
+            "name": "_validators",
+            "access": "protected",
+            "tagname": "",
+            "class": "Furnace.Validation.Object",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/validators/object.js",
+            "line": 20,
+            "description": "Type to check object against",
+            "itemtype": "property",
+            "name": "typeCheck",
+            "type": "Class",
+            "default": "null",
+            "class": "Furnace.Validation.Object",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/validators/object.js",
+            "line": 28,
+            "description": "Validators for properties",
+            "itemtype": "property",
+            "name": "validators",
+            "default": "{Object}",
+            "readonly": "",
+            "class": "Furnace.Validation.Object",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/validators/object.js",
+            "line": 45,
+            "description": "Validator initialization",
+            "itemtype": "method",
+            "name": "init",
+            "access": "protected",
+            "tagname": "",
+            "class": "Furnace.Validation.Object",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/validators/state.js",
+            "line": 91,
+            "description": "Set condition for state class",
+            "itemtype": "method",
+            "name": "cond",
+            "params": [
+                {
+                    "name": "fn",
+                    "description": "Function for determining state or single property do determine object state by",
+                    "type": "Mixed"
+                },
+                {
+                    "name": "dependendKeys",
+                    "description": "(optional)  Comma separated list of keys causing state changes",
+                    "type": "String"
+                }
+            ],
+            "static": 1,
+            "return": {
+                "description": "State class with condition appended",
+                "type": "Furnace.Validation.State"
+            },
+            "class": "Furnace.Validation.State",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 16,
+            "description": "Normalize validator and options arguments",
+            "access": "private",
+            "tagname": "",
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 35,
+            "description": "Get meta for computed properties",
+            "access": "private",
+            "tagname": "",
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 47,
+            "description": "Get computed properties",
+            "access": "private",
+            "tagname": "",
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 99,
+            "description": "PropertyValidator",
+            "itemtype": "property",
+            "name": "Property",
+            "type": "Furnace.Validation.PropertyValidator",
+            "static": 1,
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton",
+            "namespace": "Furnace"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 107,
+            "description": "ObjectValidator",
+            "itemtype": "property",
+            "name": "Object",
+            "type": "Furnace.Validation.ObjectValidator",
+            "static": 1,
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton",
+            "namespace": "Furnace"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 115,
+            "description": "StateValidator",
+            "itemtype": "property",
+            "name": "State",
+            "type": "Furnace.Validation.StateValidator",
+            "static": 1,
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton",
+            "namespace": "Furnace"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 123,
+            "description": "PromiseValidator",
+            "itemtype": "property",
+            "name": "Promise",
+            "type": "Furnace.Validation.PromiseValidator",
+            "static": 1,
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton",
+            "namespace": "Furnace"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 131,
+            "description": "Add validation to an enumerable property.\n\nValidations apply to the property itself. Chain with another \"val()\" to add validation for the enumerable contents",
+            "itemtype": "method",
+            "name": "enum",
+            "static": 1,
+            "params": [
+                {
+                    "name": "validators",
+                    "description": "Either the name of the validator with options in the 2nd parameter or a hash with validator:options as key:value pairs",
+                    "type": "Object"
+                },
+                {
+                    "name": "options",
+                    "description": "(optional}  Options for a single validator",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Ember.ComputedProperty"
+            },
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton",
+            "namespace": "Furnace"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 159,
+            "description": "Extend and add object validator",
+            "itemtype": "method",
+            "name": "object",
+            "static": 1,
+            "params": [
+                {
+                    "name": "options",
+                    "description": "ObjectValidator options",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Ember.ComputedProperty"
+            },
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton",
+            "namespace": "Furnace"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 171,
+            "description": "Extend and add state validator",
+            "itemtype": "method",
+            "name": "state",
+            "static": 1,
+            "params": [
+                {
+                    "name": "fn",
+                    "description": "Method for determining object state",
+                    "type": "Function"
+                },
+                {
+                    "name": "deps",
+                    "description": "Dependend key names",
+                    "type": "Object"
+                },
+                {
+                    "name": "states",
+                    "description": "Hash with states and their associated validations",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Ember.ComputedProperty"
+            },
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton",
+            "namespace": "Furnace"
+        },
+        {
+            "file": "addon/index.js",
+            "line": 188,
+            "description": "Add one or more validators",
+            "itemtype": "method",
+            "name": "val",
+            "static": 1,
+            "params": [
+                {
+                    "name": "validators",
+                    "description": "Either the name of the validator with options in the 2nd parameter or a hash with validator:options as key:value pairs",
+                    "type": "Object"
+                },
+                {
+                    "name": "options",
+                    "description": "(optional}  Options for a single validator",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "Ember.ComputedProperty"
+            },
+            "class": "Furnace.Validation",
+            "module": "furnace",
+            "submodule": "furnace-validaton",
+            "namespace": "Furnace"
+        },
+        {
+            "file": "addon/message.js",
+            "line": 10,
+            "description": "Key to which this message applies",
+            "itemtype": "property",
+            "name": "key",
+            "type": "String",
+            "class": "Furnace.Validation.Message",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/message.js",
+            "line": 17,
+            "description": "Name to which this message applies",
+            "itemtype": "property",
+            "name": "name",
+            "type": "String",
+            "class": "Furnace.Validation.Message",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/message.js",
+            "line": 24,
+            "description": "Full path to which this message applies",
+            "itemtype": "property",
+            "name": "path",
+            "type": "String",
+            "class": "Furnace.Validation.Message",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/message.js",
+            "line": 31,
+            "description": "Type of the message (error/warning/notice/unknown)",
+            "itemtype": "property",
+            "name": "type",
+            "type": "String",
+            "default": "\"unknown\"",
+            "class": "Furnace.Validation.Message",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/message.js",
+            "line": 39,
+            "description": "The message text",
+            "itemtype": "property",
+            "name": "message",
+            "type": "String",
+            "default": "\"unknown\"",
+            "class": "Furnace.Validation.Message",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/message.js",
+            "line": 47,
+            "description": "Attributes provided by the validaton",
+            "itemtype": "property",
+            "name": "attributes",
+            "type": "Mixed",
+            "default": "null",
+            "class": "Furnace.Validation.Message",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/message.js",
+            "line": 55,
+            "description": "Stringvalue for the message",
+            "itemtype": "method",
+            "name": "toString",
+            "return": {
+                "description": "Returns a furnace-i18n compatible string of the message",
+                "type": "String"
+            },
+            "class": "Furnace.Validation.Message",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/result.js",
+            "line": 11,
+            "description": "Result of the validation",
+            "itemtype": "property",
+            "name": "valid",
+            "type": "Boolean",
+            "default": "false",
+            "class": "Furnace.Validation.Result",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/result.js",
+            "line": 20,
+            "description": "Messages emitted by the validator(s)",
+            "itemtype": "property",
+            "name": "messages",
+            "type": "Array",
+            "readonly": "",
+            "class": "Furnace.Validation.Result",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/result.js",
+            "line": 30,
+            "description": "Messages emitted by the validator(s)",
+            "itemtype": "property",
+            "name": "_messages",
+            "type": "Array",
+            "access": "private",
+            "tagname": "",
+            "class": "Furnace.Validation.Result",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/result.js",
+            "line": 40,
+            "description": "Running validators refcounter",
+            "itemtype": "property",
+            "name": "_valCount",
+            "type": "int",
+            "access": "private",
+            "tagname": "",
+            "class": "Furnace.Validation.Result",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/result.js",
+            "line": 49,
+            "description": "Increase validator refcount",
+            "itemtype": "method",
+            "name": "_valCountIncrease",
+            "access": "private",
+            "tagname": "",
+            "class": "Furnace.Validation.Result",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/result.js",
+            "line": 58,
+            "description": "Decrease validator refcount",
+            "itemtype": "method",
+            "name": "_valCountDecrease",
+            "access": "private",
+            "tagname": "",
+            "class": "Furnace.Validation.Result",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        },
+        {
+            "file": "addon/result.js",
+            "line": 74,
+            "description": "Initialize result",
+            "itemtype": "method",
+            "name": "init",
+            "access": "protected",
+            "tagname": "",
+            "class": "Furnace.Validation.Result",
+            "module": "furnace",
+            "namespace": "Furnace.Validation"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "unknown tag: abstract",
+            "line": " addon/validators/abstract.js:46"
+        },
+        {
+            "message": "Missing item type\nNormalize validator and options arguments",
+            "line": " addon/index.js:16"
+        },
+        {
+            "message": "Missing item type\nGet meta for computed properties",
+            "line": " addon/index.js:35"
+        },
+        {
+            "message": "Missing item type\nGet computed properties",
+            "line": " addon/index.js:47"
+        }
+    ]
+}

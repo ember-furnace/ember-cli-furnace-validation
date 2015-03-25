@@ -1,5 +1,6 @@
 import Ember from 'ember';
 
+/* Not in use!! */
 var Context = Ember.Object.extend({
 		value : null,
 		key : null,

@@ -1,12 +1,15 @@
 import Promise from './promise';
 import Ember from 'ember';
 
+/**
+ * State validator
+ * 
+ * @namespace Furnace.Validation
+ * @class State
+ * @extends Furnace.Validation.Promise
+ */
 var State= Promise.extend({
 	_validators : null,
-	
-	_observers : null,
-	
-	typeCheck : null,
 	
 	_stateFn : null,
 	
@@ -85,6 +88,14 @@ var State= Promise.extend({
 });
 
 State.reopenClass({
+	/**
+	 * Set condition for state class
+	 * @method cond
+	 * @param fn {Mixed} Function for determining state or single property do determine object state by
+	 * @param dependendKeys (optional) {String} Comma separated list of keys causing state changes 
+	 * @static
+	 * @return {Furnace.Validation.State} State class with condition appended
+	 */
 	cond : function() {
 		if(arguments.length===1) {
 			Ember.assert("When passing 1 argument to cond() the first argument is expected to be a single property to determine state",typeof arguments[0]==='string' && arguments[0].split(',').length===1);

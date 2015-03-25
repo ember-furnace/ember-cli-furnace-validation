@@ -1,13 +1,36 @@
 import Promise from './promise';
 import Ember from 'ember';
 
+/**
+ * Object validator
+ * 
+ * @namespace Furnace.Validation
+ * @class Object
+ * @extends Furnace.Validation.Promise
+ */
 export default Promise.extend({
+	
+	/**
+	 * Validator instances
+	 * @property _validators
+	 * @protected 
+	 */
 	_validators : null,
 	
-	_observers : null,
-	
+	/**
+	 * Type to check object against
+	 * @property typeCheck
+	 * @type Class
+	 * @default null 
+	 */
 	typeCheck : null,
 	
+	/**
+	 * Validators for properties
+	 * @property validators
+	 * @default {Object}
+	 * @readOnly
+	 */
 	validators: Ember.computed(function() {
 		var ret = {};
 		var self = this;
@@ -19,6 +42,11 @@ export default Promise.extend({
 		return ret;
 	}).readOnly(),
 	
+	/**
+	 * Validator initialization
+	 * @method init
+	 * @protected
+	 */
 	init: function() {
 		this._super();	
 		this._validators={};
@@ -35,7 +63,6 @@ export default Promise.extend({
 			for(var propertyName in validators) {
 				var nestedContext=context.nest(propertyName);
 				if(nestedContext) {
-					context.result.setValidation(nestedContext);
 					promises.pushObject(validators[propertyName]._validate(nestedContext));
 				}
 			}
@@ -49,6 +76,7 @@ export default Promise.extend({
 			return e;
 		},validator.constructor.toString()+" Validations resolved");		
 	},
+	
 	
 	_validateProperty:function(propertyName,context) {
 		return this.get('validators.'+propertyName).invoke('_validate',context);

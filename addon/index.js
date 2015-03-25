@@ -1,3 +1,10 @@
+/**
+ * Provides validation features.
+ *
+ * @module furnace
+ * @submodule furnace-validaton
+ */
+
 import ObjectValidator from './validators/object';
 import StateValidator from './validators/state';
 import PropertyValidator from './validators/property';
@@ -6,6 +13,10 @@ import EnumValidator from './validators/enum';
 import CollectionValidator from './validators/collection';
 import Ember from 'ember';
 
+/**
+ * Normalize validator and options arguments 
+ * @private
+ */
 var getValidators=function(validators,options) {	
 	if(typeof validators === 'string') {
 		var name=validators;
@@ -21,6 +32,10 @@ var getValidators=function(validators,options) {
 	return validators;
 };
 
+/**
+ * Get meta for computed properties
+ * @private
+ */
 var getMeta=function(validators,type) {
 	type=type || 'validation';
 	return {
@@ -29,6 +44,10 @@ var getMeta=function(validators,type) {
 	};
 };
 
+/**
+ * Get computed properties
+ * @private
+ */
 var getComputed=function() {
 	return Ember.computed(function(key) {
 		Ember.assert("You have an assigned attribute validation to something thats not an ObjectValidator",(this instanceof ObjectValidator || this instanceof StateValidator));
@@ -68,15 +87,58 @@ var getComputed=function() {
 		return this._validators[key];
 	});
 };
+
+/**
+ * Validation namespace
+ * @class Validation
+ * @static
+ * @namespace Furnace
+ */
 export default {
+	
+	/**
+	 * PropertyValidator
+	 * @property Property
+	 * @type Furnace.Validation.PropertyValidator
+	 * @static
+	 */
 	Property: PropertyValidator,
 	
+	/**
+	 * ObjectValidator
+	 * @property Object
+	 * @type Furnace.Validation.ObjectValidator
+	 * @static
+	 */
 	Object: ObjectValidator,
 	
+	/**
+	 * StateValidator
+	 * @property State
+	 * @type Furnace.Validation.StateValidator
+	 * @static
+	 */
 	State: StateValidator,
 	
+	/**
+	 * PromiseValidator
+	 * @property Promise
+	 * @type Furnace.Validation.PromiseValidator
+	 * @static
+	 */
 	Promise: PromiseValidator,
 	
+	/**
+	 * Add validation to an enumerable property.
+	 * 
+	 * Validations apply to the property itself. Chain with another "val()" to add validation for the enumerable contents
+	 * 
+	 * @method enum
+	 * @static
+	 * @param validators {Object} Either the name of the validator with options in the 2nd parameter or a hash with validator:options as key:value pairs
+	 * @param options (optional} {Object} Options for a single validator 
+	 * @return Ember.ComputedProperty 
+	 */
 	enum : function(validators,options) {
 		var listValidators={};
 		if(validators) {
@@ -94,17 +156,44 @@ export default {
 		return list;
 	},
 	
+	/**
+	 * Extend and add object validator
+	 * 
+	 * @method object
+	 * @static
+	 * @param options {Object} ObjectValidator options
+	 * @return Ember.ComputedProperty 
+	 */
 	object: function(options) {
 		 return this.val('object' ,options);
 	},
 	
-	state: function(fn,deps,options) {		
-		options=options || {};
-		options._stateFn=fn;
-		options._stateDeps=deps;
-		return this.val('state' ,options);
+	/**
+	 * Extend and add state validator
+	 * 
+	 * @method state
+	 * @static
+	 * @param fn {Function} Method for determining object state
+	 * @param deps {Object} Dependend key names
+	 * @param states {Object} Hash with states and their associated validations
+	 * @return Ember.ComputedProperty 
+	 */
+	state: function(fn,deps,states) {		
+		states=states || {};
+		states._stateFn=fn;
+		states._stateDeps=deps;
+		return this.val('state' ,states);
 	},
 	
+	/**
+	 * Add one or more validators
+	 * 
+	 * @method val
+	 * @static
+	 * @param validators {Object} Either the name of the validator with options in the 2nd parameter or a hash with validator:options as key:value pairs
+	 * @param options (optional} {Object} Options for a single validator 
+	 * @return Ember.ComputedProperty 
+	 */
 	val : function(validators,options) {
 		validators=getValidators(validators,options);
 		

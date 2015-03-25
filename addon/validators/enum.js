@@ -1,5 +1,13 @@
 import Object from './object';
 import Ember from 'ember';
+
+/**
+ * Enumerable validator
+ * 
+ * @namespace Furnace.Validation
+ * @class Enum
+ * @extends Furnace.Validation.Object
+ */
 export default Object.extend({
 	
 	_validators: null,

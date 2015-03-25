@@ -1,6 +1,13 @@
 import Abstract from './abstract';
 import Ember from 'ember';
 
+/**
+ * Promise validator
+ * 
+ * @namespace Furnace.Validation
+ * @extends Furnace.Validation.Abstract
+ * @class Promise
+ */
 export default Abstract.extend({
 	_validate : function(context) {
 		var validator=this;

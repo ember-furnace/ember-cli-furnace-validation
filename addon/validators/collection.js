@@ -1,14 +1,36 @@
 import Ember from 'ember';
 import Promise from './promise';
 
+/**
+ * Collection of validators, wrapping different validators into one promise
+ * 
+ * @namespace Furnace.Validation
+ * @class Collection
+ * @extends Furnace.Validation.Promise
+ */
 export default Promise.extend({
 	
+	/**
+	 * Validator instances
+	 * @property _validators
+	 * @protected 
+	 */
 	_validators : null,
 	
+	/**
+	 * Validator initialization
+	 * @method init
+	 * @protected
+	 */
 	init : function() {
 		this._validators=Ember.A();
 	},
 	
+	/**
+	 * Add validator to the collection
+	 * @method push
+	 * @param validator {Abstract} validator to add
+	 */
 	push : function(validator) {
 		this._validators.push(validator);
 	},
@@ -23,7 +45,7 @@ export default Promise.extend({
 			return context.result;
 		},function(e) {
 			return e;
-		},validator.constructor.toString()+" Validations resolved").finally(function(){			
+		},validator.constructor.toString()+" Validations resolved").finally(function(){
 			context.result._valCountDecrease();
 		});	
 		

@@ -1,21 +1,65 @@
 import Ember from 'ember';
 import Message from './message';
+
+/**
+ * Validation result
+ * 
+ * @namespace Furnace.Validation
+ * @class Result
+ */
 export default Ember.Object.extend({
-	
+	/**
+	 * Result of the validation
+	 * 
+	 * @property valid
+	 * @type Boolean
+	 * @default false
+	 */
 	valid:false,
 	
+	/**
+	 * Messages emitted by the validator(s)
+	 * 
+	 * @property messages
+	 * @type Array 
+	 * @readOnly
+	 */
 	messages: Ember.computed.readOnly('_messages'),
 	
-	_validations: null,
-	
+
+	/**
+	 * Messages emitted by the validator(s)
+	 * 
+	 * @property _messages
+	 * @type Array 
+	 * @private
+	 */
 	_messages: null,
 	
+	
+	/**
+	 * Running validators refcounter
+	 * 
+	 * @property _valCount
+	 * @type int 
+	 * @private
+	 */
 	_valCount: 0,
 	
+	/**
+	 * Increase validator refcount
+	 * @method _valCountIncrease
+	 * @private
+	 */
 	_valCountIncrease : function() {
 		this._valCount++;
 	},
 	
+	/**
+	 * Decrease validator refcount
+	 * @method _valCountDecrease
+	 * @private
+	 */
 	_valCountDecrease : function() {
 		this._valCount--;
 		if(this._valCount===0) {
@@ -27,46 +71,23 @@ export default Ember.Object.extend({
 		}
 	},
 	
+	/**
+	 * Initialize result
+	 * @method init
+	 * @protected
+	 */
 	init : function() {
 		this.set('_messages', {});		
-		this.set('_validations', {});
 	},
 	
-	updateValidity: function(context,deep) {
-		if(deep) {
-			for(var path in this._validations) {
-				if(path.substr(0,context.path.length)===context.path) {
-					this._validations[path]=this.getErrorCount(path)===0;
-				}
-			}
-			
-		}		
-		if(!this.getErrorCount(context.path)){
-			this.setValid(context);
-		}
-	},
 	
-	setValidation:function(context,valid) {
-		if(valid===undefined)
-			valid=false;
-		this._validations[context.path]=valid;
-	},
-	
-	setValid:function(context) {
-		if(context) {
-			this._validations[context.path]=true;
-		} else {
-			this.set('valid',true);
-		}
+	setValid:function() {
+		this.set('valid',true);
 		return this;
 	},
 	
-	setInvalid:function(context) {
-		if(context) {
-			this._validations[context.path]=false;
-		} else {
-			this.set('valid',false);
-		}
+	setInvalid:function() {
+		this.set('valid',false);
 		return this;
 	},
 	
@@ -74,20 +95,18 @@ export default Ember.Object.extend({
 		return this.get('valid');
 	},
 	
-	reset:function(context,deep) {		
+	reset:function(context,deep) {
 		if(context) {
 			if(deep) {
 				for(var path in this._messages) {
 					if(path.substr(0,context.path.length)===context.path) {
 						this._messages[path]=Ember.A();
-						this._validations[path]=false;
 					}
 				}
 				
 			}
 			else {
 				this._messages[context.path]=Ember.A();
-				this._validations[context.path]=false;
 			}
 		} else {
 			this.set('_messages', {});		
@@ -150,14 +169,6 @@ export default Ember.Object.extend({
 		return this._messages[key];
 	},
 	
-	getValidations:function() {
-		var validations={};
-		for(var path in this._validations) {
-			validations[path]=this._validations[path];
-		}
-		return validations;
-	},
-	
 	getMessages:function(key,type) {
 		var messages;
 		if(key) {
@@ -165,7 +176,7 @@ export default Ember.Object.extend({
 		} else {
 			messages=this.getAll();
 		}
-		if(type && messages) {
+		if(type) {
 			return messages.filterBy('type',type);
 		}
 		return messages;
@@ -184,26 +195,14 @@ export default Ember.Object.extend({
 	},
 	
 	getErrorCount:function(key) {
-		var messages=this.getErrors(key);
-		if(messages===null) {
-			return 0;
-		}
-		return messages.length;
+		return this.getErrors(key).length;
 	},
 	
 	getWarningCount:function(key) {
-		var messages=this.getWarnings(key);
-		if(messages===null) {
-			return 0;
-		}
-		return messages.length;
+		return this.getWarnings(key).length;
 	},
 	
 	getNoticeCount:function(key) {
-		var messages=this.getNotices(key);
-		if(messages===null) {
-			return 0;
-		}
-		return messages.length;
+		return this.getNotices(key).length;
 	}
 });
