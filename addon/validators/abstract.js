@@ -25,7 +25,14 @@ export default Ember.Object.extend({
 	validate : function(value,key,result) {
 		Ember.assert('Result to append to should be an instance of Result',!result || (result instanceof Result));
 		var context=createContext(value,key,result);
-		return this._validate(context);
+		var validation = this._validate(context);
+		if(validation instanceof Ember.RSVP.Promise) {
+			return validation.then(function(result){
+				result.updateValidity(context,true);
+				return result;
+			});
+		}
+		return context.result;
 	},
 		
 	/**

@@ -63,6 +63,7 @@ export default Promise.extend({
 			for(var propertyName in validators) {
 				var nestedContext=context.nest(propertyName);
 				if(nestedContext) {
+					context.result.setValidation(nestedContext);
 					promises.pushObject(validators[propertyName]._validate(nestedContext));
 				}
 			}
