@@ -5,7 +5,6 @@ var nestContext= function(key,value) {
 	if(!(this.value instanceof Ember.Object)) {
 		return null;
 	}				
-	//console.log(context);
 	var nestedContext= {
 		value:value || this.value.get(key),
 		key: key ,

@@ -23,7 +23,7 @@ export default Promise.extend({
 			return context.result;
 		},function(e) {
 			return e;
-		},validator.constructor.toString()+" Validations resolved").finally(function(){
+		},validator.constructor.toString()+" Validations resolved").finally(function(){			
 			context.result._valCountDecrease();
 		});	
 		

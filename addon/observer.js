@@ -97,12 +97,20 @@ var Observer = Ember.Object.extend({
 		this._children.pushObject(observer);
 	},
 	
-	run:function(callback) {
+	run:function(callback,callDefaultCallback) {
 		var _callback=this._callback;
-		this._context.result.reset();
-		this._context.resetStack();
-		this._validator._validate(this._context).then(function(result) {
-			_callback(result);
+		var context=this._context;
+		
+		context.result.reset();
+		context.resetStack();
+		if(callDefaultCallback===undefined) {
+			callDefaultCallback=true;
+		}
+		this._validator._validate(context).then(function(result) {
+			result.updateValidity(context,true);
+			if(callDefaultCallback) {
+				_callback(result);
+			}
 			if(callback) {
 				callback(result);
 			}
@@ -117,6 +125,10 @@ var Observer = Ember.Object.extend({
 			});
 		}
 		this._super();
+	},
+	
+	getResult: function() {
+		return this._context.result;
 	},
 	
 	_fn: function(sender, key, value, rev){
@@ -148,7 +160,13 @@ var Observer = Ember.Object.extend({
 			});
 		}
 		
-		this._validator._validate(this._context).then(this._callback);
+		var context=this._context;
+		var callback=this._callback;
+		
+		this._validator._validate(this._context).then(function(result){
+			result.updateValidity(context,true);
+			callback(result);
+		});
 		
 		if(this._orgValue) {
 			this._validator._observe(this);

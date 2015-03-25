@@ -9,7 +9,14 @@ export default Ember.Object.extend({
 	validate : function(value,key,result) {
 		Ember.assert('Result to append to should be an instance of Result',!result || (result instanceof Result));
 		var context=createContext(value,key,result);
-		return this._validate(context);
+		var validation = this._validate(context);
+		if(validation instanceof Ember.RSVP.Promise) {
+			return validation.then(function(result){
+				result.updateValidity(context,true);
+				return result;
+			});
+		}
+		return context.result;
 	},
 		
 	_validate : function(context) {
@@ -18,7 +25,7 @@ export default Ember.Object.extend({
 		context.result._valCountDecrease();
 		return context.result;
 	},
-	
+			
 	call : function(context,value,result) {
 		Ember.assert("Did you forget to override the 'call' method in your validator? ("+this.toString()+")");
 	},
