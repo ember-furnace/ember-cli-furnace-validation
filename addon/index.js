@@ -1,8 +1,9 @@
 /**
  * Provides validation features.
  *
- * @module furnace
- * @submodule furnace-validaton
+ * @module furnace-validaton
+ * @class Furnace.Validation
+ * @static
  */
 
 import ObjectValidator from './validators/object';
@@ -88,18 +89,13 @@ var getComputed=function() {
 	});
 };
 
-/**
- * Validation namespace
- * @class Validation
- * @static
- * @namespace Furnace
- */
 export default {
 	
 	/**
 	 * PropertyValidator
 	 * @property Property
 	 * @type Furnace.Validation.PropertyValidator
+	 * @for Furnace.Validation
 	 * @static
 	 */
 	Property: PropertyValidator,
@@ -108,6 +104,7 @@ export default {
 	 * ObjectValidator
 	 * @property Object
 	 * @type Furnace.Validation.ObjectValidator
+	 * @for Furnace.Validation
 	 * @static
 	 */
 	Object: ObjectValidator,
@@ -116,6 +113,7 @@ export default {
 	 * StateValidator
 	 * @property State
 	 * @type Furnace.Validation.StateValidator
+	 * @for Furnace.Validation
 	 * @static
 	 */
 	State: StateValidator,
@@ -135,6 +133,7 @@ export default {
 	 * 
 	 * @method enum
 	 * @static
+	 * @for Furnace.Validation
 	 * @param validators {Object} Either the name of the validator with options in the 2nd parameter or a hash with validator:options as key:value pairs
 	 * @param options (optional} {Object} Options for a single validator 
 	 * @return Ember.ComputedProperty 
@@ -161,6 +160,7 @@ export default {
 	 * 
 	 * @method object
 	 * @static
+	 * @for Furnace.Validation
 	 * @param options {Object} ObjectValidator options
 	 * @return Ember.ComputedProperty 
 	 */
@@ -173,6 +173,7 @@ export default {
 	 * 
 	 * @method state
 	 * @static
+	 * @for Furnace.Validation
 	 * @param fn {Function} Method for determining object state
 	 * @param deps {Object} Dependend key names
 	 * @param states {Object} Hash with states and their associated validations
@@ -190,6 +191,7 @@ export default {
 	 * 
 	 * @method val
 	 * @static
+	 * @for Furnace.Validation
 	 * @param validators {Object} Either the name of the validator with options in the 2nd parameter or a hash with validator:options as key:value pairs
 	 * @param options (optional} {Object} Options for a single validator 
 	 * @return Ember.ComputedProperty 
