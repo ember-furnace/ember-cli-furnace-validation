@@ -50,7 +50,7 @@ export default Validator.extend({
 
 	checkObject: function(context,value,result) {
 		var length=value ? value.length : 0;
-		if(typeof length==='undefined') {
+		if(typeof length===undefined) {
 			length=0;
 		}
 			

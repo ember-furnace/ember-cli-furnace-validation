@@ -116,10 +116,10 @@ var Observer = Ember.Object.extend({
 		this._validator._validate(context).then(function(result) {
 			result.updateValidity(context,true);
 			if(callDefaultCallback) {
-				_callback(result);
+				_callback(result,null,null);
 			}
 			if(callback) {
-				callback(result);
+				callback(result,null,null);
 			}
 		});
 	},
@@ -172,7 +172,7 @@ var Observer = Ember.Object.extend({
 		
 		this._validator._validate(this._context).then(function(result){
 			result.updateValidity(context,true);
-			callback(result);
+			callback(result,sender,key);
 		});
 		
 		if(this._orgValue) {

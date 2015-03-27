@@ -11,6 +11,7 @@ import StateValidator from './validators/state';
 import PropertyValidator from './validators/property';
 import PromiseValidator from './validators/promise';
 import EnumValidator from './validators/enum';
+import EnumItemValidator from './validators/enum-item';
 import CollectionValidator from './validators/collection';
 import Ember from 'ember';
 
@@ -37,10 +38,11 @@ var getValidators=function(validators,options) {
  * Get meta for computed properties
  * @private
  */
-var getMeta=function(validators,type) {
-	type=type || 'validation';
+var getMeta=function(validators,collection) {
+	collection=collection || CollectionValidator;
 	return {
-		type: type,
+		type: 'validation',
+		collection: collection,
 		validators:validators
 	};
 };
@@ -49,40 +51,43 @@ var getMeta=function(validators,type) {
  * Get computed properties
  * @private
  */
-var getComputed=function() {
+var getComputed=function(enumerable) {
 	return Ember.computed(function(key) {
 		Ember.assert("You have an assigned attribute validation to something thats not an ObjectValidator",(this instanceof ObjectValidator || this instanceof StateValidator));
 		
-		if(!this._validators[key]) {
-			this._validators[key]=CollectionValidator.create();
+		if(!this._validators[key]) {			
 			var meta = this.constructor.metaForProperty(key);
-			var validators=meta.validators;
-			for(var validator in validators) {
-				var options=validators[validator];
-				if(options) {
-					if(options===true) {
-						// It was indicated just to append this validator without any options.
-						// By passing null we can get a cached instance.
-						options=null;
-					}						
-				}
-				var _validator;
-				switch(validator) {
-					case 'enum':
-						_validator=EnumValidator.create({validators : options});
-						break;
-					case 'state':
-						_validator=StateValidator.extend(options).create({container: this.get('container')});
-						break;
-					case 'object':
-						_validator=ObjectValidator.extend(options).create({container: this.get('container')});
-						break;
-					default:
-						_validator=this.validatorFor(validator,options);
-						break;
-				}
-				this._validators[key].push(_validator);
+			if(meta.type==='validation') {
+				this._validators[key]=meta.collection.create();
 				
+				var validators=meta.validators;
+				for(var validator in validators) {
+					var options=validators[validator];
+					if(options) {
+						if(options===true) {
+							// It was indicated just to append this validator without any options.
+							// By passing null we can get a cached instance.
+							options=null;
+						}						
+					}
+					var _validator;
+					switch(validator) {
+						case 'enum':
+							_validator=EnumItemValidator.create({validators : options});
+							break;
+						case 'state':
+							_validator=StateValidator.extend(options).create({container: this.get('container')});
+							break;
+						case 'object':
+							_validator=ObjectValidator.extend(options).create({container: this.get('container')});
+							break;
+						default:
+							_validator=this.validatorFor(validator,options);
+							break;
+					}
+					this._validators[key].push(_validator);
+					
+				}
 			}
 		}			
 		return this._validators[key];
@@ -143,9 +148,9 @@ export default {
 		if(validators) {
 			listValidators=getValidators(validators,options);
 		}
-		var meta = getMeta(listValidators);
+		var meta = getMeta(listValidators,EnumValidator);
 		
-		var list = getComputed().meta(meta);
+		var list = getComputed(true).meta(meta);
 		list.val = function(validators,options) {
 			var itemValidators=this._meta.validators || {};
 			itemValidators['enum']=getValidators(validators,options);

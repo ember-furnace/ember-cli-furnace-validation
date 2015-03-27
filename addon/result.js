@@ -127,9 +127,11 @@ export default Ember.Object.extend({
 	reset:function(context,deep) {
 		if(context) {
 			if(deep) {
-				for(var path in this._messages) {
+				for(var path in this._validations) {
 					if(path.substr(0,context.path.length)===context.path) {
-						this._messages[path]=Ember.A();
+						if(this._messages[path]!==undefined) {
+							this._messages[path]=Ember.A();
+						}
 						this._validations[path]=false;
 					}
 				}
