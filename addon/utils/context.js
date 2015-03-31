@@ -28,6 +28,7 @@ var createContext  = function(value,key,result) {
 		value:value,			
 		key: key || (value instanceof Ember.Object ? 'object' : 'value'),
 		path : key || (value instanceof Ember.Object ? 'object' : 'value'),
+		name : key || (value instanceof Ember.Object ? 'object' : 'value'),
 		result : result || Result.create(),
 		stack :  Ember.A(),		
 		parent :  null,

@@ -53,7 +53,7 @@ var Observer = Ember.Object.extend({
 	_detach:function() {
 		this._target.removeObserver(this._key,this,this._fn);
 		for(var i=0;i<this._keys.length;i++) {
-			this._orgValue().removeObserver(this._keys[i],this,this._fn);
+			this._orgValue.removeObserver(this._keys[i],this,this._fn);
 		}
 	},
 	
