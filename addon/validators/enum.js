@@ -13,7 +13,7 @@ export default Collection.extend({
 	_observe : function(observer) {
 		this._super(observer);
 		if(observer._getValue() && typeof observer._getValue()==='object') {
-			observer._observeKey('length');
+			observer._observeKey('@each');
 		}
 	},
 	

@@ -2,7 +2,7 @@
  import { test } from 'ember-qunit';
  import startApp from '../../helpers/start-app';
  import Validation from 'furnace-validation';
- import ObjectValidator from 'furnace-validation/object';
+ import ObjectValidator from 'furnace-validation/validators/object';
  var App;
  var Validator;
  module('Validation object tests', {

@@ -1,6 +1,6 @@
-import Object from './object';
+import Promise from './promise';
 import Ember from 'ember';
-
+import CollectionValidator from './collection';
 /**
  * Enumerable validator
  * 
@@ -8,26 +8,17 @@ import Ember from 'ember';
  * @class Enum
  * @extends Furnace.Validation.Object
  */
-export default Object.extend({
+export default Promise.extend({
 	
 	_validators: null,
 	
-	validators: Ember.computed(function(index,value) {
-		if(value) {
-			var validators = Ember.A();
-			var self = this;
-			for(var name in value) {
-				var options = value[name];
-				if(options===true) {
-					options=null;
-				}
-				validators.pushObject(this.validatorFor(name,options));
-			}
-			return validators;		
+	validator: Ember.computed(function() {
+		var ret = CollectionValidator.create();
+		for(var name in this._validators) {
+			var options=this._validators[name]===true ? null : this._validators[name];
+			ret.push(this.validatorFor(name,options));				
 		}
-		else {
-			return this.get('_validators');
-		}
+		return ret;			
 	}),
 	
 	_validate : function(context) {
@@ -35,11 +26,11 @@ export default Object.extend({
 		var validator=this;
 		if(context.value) {			
 			Ember.assert('The enum validator received a value that is not enumerable!',Ember.Enumerable.detect(context.value));
-			var validators=validator.get('validators');				
+			var list=this.get('validator');
 			context.value.forEach(function(item,index) {
 				var nestedContext=context.nest(index,item);
 				if(nestedContext) {
-					promises.pushObjects(validators.invoke('_validate',nestedContext));
+					promises.pushObject(list._validate(nestedContext));
 				}
 			});
 		} 
@@ -50,5 +41,21 @@ export default Object.extend({
 		},validator.constructor.toString()+" Validations resolved");	
 	},
 	
-	
+	_observe : function(observer) {
+		this._super(observer);
+		observer._observe('@each',this.get('validator'));
+		
+//		var value=observer._getValue();
+//		if(value) {
+//			Ember.assert('The enum validator received a value that is not enumerable!',Ember.Enumerable.detect(value));
+//			var validator=this.get('validator');
+//			value.forEach(function(item,index) {
+//				console.log(observer);
+//			});
+//		}
+//		console.log(value.get('length'));
+//		this.get('validators').forEach(function(validator) {			
+//			validator._observe(observer);
+//		});
+	}
 });

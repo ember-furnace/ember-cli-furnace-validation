@@ -71,15 +71,15 @@ var getComputed=function(enumerable) {
 						}						
 					}
 					var _validator;
-					switch(validator) {
+					switch(validator) { 
 						case 'enum':
-							_validator=EnumItemValidator.create({validators : options});
+							_validator=EnumItemValidator.create({_validators : options,container: this.container});
 							break;
 						case 'state':
-							_validator=StateValidator.extend(options).create({container: this.get('container')});
+							_validator=StateValidator.extend(options).create({container: this.container});
 							break;
 						case 'object':
-							_validator=ObjectValidator.extend(options).create({container: this.get('container')});
+							_validator=ObjectValidator.extend(options).create({container: this.container});
 							break;
 						default:
 							_validator=this.validatorFor(validator,options);

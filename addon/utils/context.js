@@ -21,7 +21,7 @@ var nestContext= function(key,value) {
 		
 	};
 	return nestedContext;
-}
+};
 
 var createContext  = function(value,key,result) {
 	return {

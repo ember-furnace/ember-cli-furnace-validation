@@ -3,7 +3,7 @@
  import { test } from 'ember-qunit';
  import startApp from '../../helpers/start-app';
  import lookup from '../../helpers/lookup';
- import ObjectValidator from 'furnace-validation/object';
+ import ObjectValidator from 'furnace-validation/validators/object';
  import Dummy from 'dummy/validators/dummy';
  var App;
  module('Validation lookup tests', {

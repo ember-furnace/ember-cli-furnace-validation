@@ -3,7 +3,7 @@
  import startApp from 'dummy/tests/helpers/start-app';
  import lookup from 'dummy/tests/helpers/lookup';
  import Validation from 'furnace-validation';
- import PropertyValidator from 'furnace-validation/property';
+ import PropertyValidator from 'furnace-validation/validators/property';
  var App,Validator;
  module('Validation local/required tests', {
 	 setup: function() {

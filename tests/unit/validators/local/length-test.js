@@ -3,7 +3,7 @@
  import startApp from 'dummy/tests/helpers/start-app';
  import lookup from 'dummy/tests/helpers/lookup';
  import Validation from 'furnace-validation';
- import PropertyValidator from 'furnace-validation/property';
+ import PropertyValidator from 'furnace-validation/validators/property';
  var App,Validator;
  module('Validation local/length tests', {
 	 setup: function() {
@@ -19,18 +19,22 @@ test("Check validator (min)", function( ) {
 	
 	Validator = lookup(App,'length',{ min : 2});
 	ok(Validator instanceof PropertyValidator, 'Check instance');
+	result = Validator.validate(null);
 	
-	result = Validator.validate(null);		
-	ok(!result.isValid(),'Check null invalid');	
-	ok(result.getMessages().length===1,'Check messages length');		
-	ok(result.getMessages('value')[0].message==='tooShort','Check message name');
-	ok(result.getMessages('value')[0].attributes[0]===2,'Check message attribute');
-
+	// Behaviour has changed, check existence with required
+	//ok(!result.isValid(),'Check null invalid');
+	ok(result.isValid(),'Check null valid');
+		
 	result = Validator.validate(undefined);
-	ok(!result.isValid(),'Check undefined invalid');		
+	// Behaviour has changed, check existence with required
+	//ok(!result.isValid(),'Check undefined invalid');		
+	ok(result.isValid(),'Check undefined valid');
 	
 	result = Validator.validate("");
 	ok(!result.isValid(),'Check empty string invalid');		
+	ok(result.getMessages().length===1,'Check messages length');
+	ok(result.getMessages('value')[0].message==='tooShort','Check message name');
+	ok(result.getMessages('value')[0].attributes[0]===2,'Check message attribute');
 	
 	result = Validator.validate(0);
 	ok(!result.isValid(),'Check 0 invalid');		
@@ -104,16 +108,20 @@ test("Check validator (exact)", function( ) {
 	ok(Validator instanceof PropertyValidator, 'Check instance');
 	
 	result = Validator.validate(null);
-	ok(!result.isValid(),'Check null invalid');		
-	ok(result.getMessages().length===1,'Check messages length');		
-	ok(result.getMessages('value')[0].message==='wrongLength','Check message name');
-	ok(result.getMessages('value')[0].attributes[0]===2,'Check message attribute');
-
+	// Behaviour has changed, check existence with required
+	//ok(!result.isValid(),'Check null invalid');
+	ok(result.isValid(),'Check null valid');
+	
+	// Behaviour has changed, check existence with required
 	result = Validator.validate(undefined);
-	ok(!result.isValid(),'Check undefined invalid');		
+	//ok(!result.isValid(),'Check undefined invalid');		
+	ok(result.isValid(),'Check undefined valid');		
 	
 	result = Validator.validate("");
 	ok(!result.isValid(),'Check empty string invalid');		
+	ok(result.getMessages().length===1,'Check messages length');		
+	ok(result.getMessages('value')[0].message==='wrongLength','Check message name');
+	ok(result.getMessages('value')[0].attributes[0]===2,'Check message attribute');
 	
 	result = Validator.validate(0);
 	ok(!result.isValid(),'Check 0 invalid');		
