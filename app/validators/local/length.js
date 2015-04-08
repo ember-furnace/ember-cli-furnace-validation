@@ -6,20 +6,20 @@ export default Validator.extend({
 	max: false,
 	exact : false,
 	
-	call : function(context,value,result) {
-		if(Ember.isBlank(value)) {			
-			return;
-		}
+	call : function(context,value,result) {		
 		switch(typeof value) {
 		
-		case 'undefined':
-			value='';
+		case 'undefined':			
+			return;
 		case 'number':
 			value=value.toString();
 		case 'string':	
 			this.checkString(context,value,result);
 			break;		
 		case 'object':	
+			if(value===null) { 
+				return;
+			}
 			this.checkObject(context,value,result);
 			break;
 		default:
@@ -50,10 +50,9 @@ export default Validator.extend({
 
 	checkObject: function(context,value,result) {
 		var length=value ? value.length : 0;
-		if(typeof length===undefined) {
+		if(length===undefined) {
 			length=0;
 		}
-			
 		if(this.get('exact')!==false) {
 			if(length!==this.exact) {
 				result.addError(context,'wrongLength',[this.get('exact')]);
