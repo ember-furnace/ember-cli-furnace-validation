@@ -37,7 +37,7 @@ var getInstance=function(container,name,options) {
 	} else {
 		Instance=Cache.instances[name];
 		if(!Instance) {
-			Instance=Class.create();
+			Instance=Class.create({'container': container});
 			Cache.instances[name]=Instance;
 		}		
 	}
