@@ -29,16 +29,19 @@ var State= Promise.extend({
 	init: function() {
 		this._super();	
 		this._validators={};
-		this.get('validators');		
 	},
 	
-	_hasState:function(context,state) {
+	_hasState:function(context,state) {			
+		return this._getStates(context).indexOf(state)>-1;
+	},
+	
+	_getStates:function(context) {
 		Ember.assert('No method to determine object state. Did you forget to call "cond()" after extending?',typeof this._stateFn==='function');
 		var states=this._stateFn(context.value,context);
 		if(!Ember.isArray(states)) {
 			states=[states];
-		}	
-		return states.indexOf(state)>-1;
+		}
+		return states;
 	},
 	
 	_getDeps:function() {
@@ -52,12 +55,13 @@ var State= Promise.extend({
 		var promises=Ember.A();
 		Ember.assert('The state validator can\'t validate enumerables',!Ember.Enumerable.detect(context.value));
 		var validators=this.get('validators');
-		for(var propertyName in validators) {
-			if(this._hasState(context,propertyName)) {
+		var states=this._getStates(context);
+		for(var propertyName in validators) {			
+			if(states.indexOf(propertyName)>-1) {
 				promises.pushObject(validators[propertyName]._validate(context));
 			}
 		}
-	
+		Ember.warn('State validator ran without a validatable state, the result might remain invalid if no other validations were ran!',promises.length!==0);
 		var validator=this;
 		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function(values) {
 			return context.result;
@@ -74,8 +78,9 @@ var State= Promise.extend({
 	_observe : function(observer) {
 		this._super(observer);
 		var validators=this.get('validators');
+		var states=this._getStates(observer._context);		
 		for(var propertyName in validators) {
-			if(this._hasState(observer._context,propertyName)) {
+			if(states.indexOf(propertyName)>-1) {
 				observer._observe(validators[propertyName]);
 			}
 		}
@@ -118,6 +123,6 @@ State.reopenClass({
 		}
 		return this;
 	}
-})
+});
 
 export default State;
