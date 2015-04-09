@@ -33,7 +33,7 @@ test("Single model", function( ) {
 	
 	Model.set('lastName','Anderson');
 	
-	Validator.validate().then(function(result) {
+	Validator.validate(Model).then(function(result) {
 		ok(result.isValid(),'Check valid');
 	}); 
 });
