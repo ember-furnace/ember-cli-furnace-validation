@@ -14,6 +14,8 @@ export default Validator.extend({
 		case 'number':
 			value=value.toString();
 		case 'string':	
+			if(value==="")
+				return;
 			this.checkString(context,value,result);
 			break;		
 		case 'object':	

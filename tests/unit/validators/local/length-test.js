@@ -21,23 +21,25 @@ test("Check validator (min)", function( ) {
 	ok(Validator instanceof PropertyValidator, 'Check instance');
 	result = Validator.validate(null);
 	
-	// Behaviour has changed, check existence with required
+	// Behavior has changed, check existence with required
 	//ok(!result.isValid(),'Check null invalid');
 	ok(result.isValid(),'Check null valid');
 		
 	result = Validator.validate(undefined);
-	// Behaviour has changed, check existence with required
+	// Behavior has changed, check existence with required
 	//ok(!result.isValid(),'Check undefined invalid');		
 	ok(result.isValid(),'Check undefined valid');
 	
 	result = Validator.validate("");
-	ok(!result.isValid(),'Check empty string invalid');		
+	// Behavior has changed, check existence with required
+	//ok(!result.isValid(),'Check empty string invalid');		
+	ok(result.isValid(),'Check empty string valid');		
+	
+	result = Validator.validate(0);
+	ok(!result.isValid(),'Check 0 invalid');	
 	ok(result.getMessages().length===1,'Check messages length');
 	ok(result.getMessages('value')[0].message==='tooShort','Check message name');
 	ok(result.getMessages('value')[0].attributes[0]===2,'Check message attribute');
-	
-	result = Validator.validate(0);
-	ok(!result.isValid(),'Check 0 invalid');		
 	
 	result = Validator.validate(123);
 	ok(result.isValid(),'Check 123 valid');		
@@ -108,23 +110,25 @@ test("Check validator (exact)", function( ) {
 	ok(Validator instanceof PropertyValidator, 'Check instance');
 	
 	result = Validator.validate(null);
-	// Behaviour has changed, check existence with required
+	// Behavior has changed, check existence with required
 	//ok(!result.isValid(),'Check null invalid');
 	ok(result.isValid(),'Check null valid');
 	
-	// Behaviour has changed, check existence with required
 	result = Validator.validate(undefined);
+	// Behavior has changed, check existence with required
 	//ok(!result.isValid(),'Check undefined invalid');		
 	ok(result.isValid(),'Check undefined valid');		
-	
+
+	// Behavior has changed, check existence with required
 	result = Validator.validate("");
-	ok(!result.isValid(),'Check empty string invalid');		
-	ok(result.getMessages().length===1,'Check messages length');		
-	ok(result.getMessages('value')[0].message==='wrongLength','Check message name');
-	ok(result.getMessages('value')[0].attributes[0]===2,'Check message attribute');
+	//ok(!result.isValid(),'Check empty string invalid');
+	ok(result.isValid(),'Check empty string valid');
 	
 	result = Validator.validate(0);
 	ok(!result.isValid(),'Check 0 invalid');		
+	ok(result.getMessages().length===1,'Check messages length');		
+	ok(result.getMessages('value')[0].message==='wrongLength','Check message name');
+	ok(result.getMessages('value')[0].attributes[0]===2,'Check message attribute');
 	
 	result = Validator.validate(12);
 	ok(result.isValid(),'Check 12 valid');		
