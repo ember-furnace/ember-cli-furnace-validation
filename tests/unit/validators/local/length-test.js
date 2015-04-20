@@ -51,10 +51,14 @@ test("Check validator (min)", function( ) {
 	ok(result.isValid(),'Check long string valid');		
 	
 	result = Validator.validate({});
-	ok(!result.isValid(),'Check object invalid');		
+	// Behavior has changed, check existence with required
+	//ok(!result.isValid(),'Check object invalid');		
+	ok(result.isValid(),'Check object valid');		
 	
+	// Behavior has changed, check existence with required
 	result = Validator.validate([]);
-	ok(!result.isValid(),'Check empty array invalid');		
+	//ok(!result.isValid(),'Check empty array invalid');		
+	ok(result.isValid(),'Check empty array valid');		
 	
 	result = Validator.validate([1,2]);
 	ok(result.isValid(),'Check filled array valid');		
@@ -142,11 +146,15 @@ test("Check validator (exact)", function( ) {
 	result = Validator.validate("te");
 	ok(result.isValid(),'Check two char string valid');		
 	
+	// Behavior has changed, check existence with required
 	result = Validator.validate({});
-	ok(!result.isValid(),'Check object invalid');		
+	//ok(!result.isValid(),'Check object invalid');		
+	ok(result.isValid(),'Check object valid');		
 	
+	// Behavior has changed, check existence with required
 	result = Validator.validate([]);
-	ok(!result.isValid(),'Check empty array invalid');		
+	//ok(!result.isValid(),'Check empty array invalid');		
+	ok(result.isValid(),'Check empty array valid');		
 	
 	result = Validator.validate([1,2]);
 	ok(result.isValid(),'Check filled array valid');		

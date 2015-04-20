@@ -32,6 +32,7 @@ export default Ember.Object.extend({
 				return result;
 			});
 		}
+		context.result.updateValidity(context,true);
 		return context.result;
 	},
 		

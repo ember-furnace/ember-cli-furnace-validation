@@ -189,3 +189,79 @@ test("Nested models in a list with circular reference", function( ) {
 	
 
 });
+
+test("States", function( ) {
+	var Model,Validator,Observer,Target=Ember.Object.create({'model': null}),Result;
+	Ember.run(function() {
+		Model=Store.createRecord('employee',{firstName: 'Adrian',
+											lastName: ''});
+	});
+	
+	Validator=Model.validatorFor();
+	
+	Validator.observe(Target,'model',function(result){
+		Result=result;
+	});
+	
+	andThen(function() {
+		Target.set('model',Model);
+	});
+	
+	andThen(function() {
+		ok(!Result.isValid(),'Check invalid');
+	}); 
+	
+	andThen(function() {
+		Model.set('lastName','Anderson');
+	});
+	
+	andThen(function() {
+		ok(!Result.isValid(),'Check invalid');
+	});
+	
+	andThen(function() {
+		Model.set('position','Clerk');
+	});
+	
+	andThen(function() {
+		ok(Result.isValid(),'Check valid');
+	}); 
+	
+	andThen(function() {
+		Model.set('position','Manager');
+	});
+	andThen(function() {
+		ok(!Result.isValid(),'Check invalid');
+	});
+	andThen(function() {
+		Model.set('picture','Some profilepic');
+	});
+	andThen(function() {
+		ok(Result.isValid(),'Check valid');
+	});
+	
+	
+	andThen(function() {
+		Target.set('model',null);
+	});
+	
+	andThen(function() {
+		ok(Result.isValid(),'Check valid');
+	}); 
+	
+	andThen(function() {
+		Model.set('picture','');
+		Target.set('model',Model);		
+	});
+	
+	andThen(function() {
+		ok(!Result.isValid(),'Check invalid');
+	});
+	andThen(function() {
+		Model.set('picture','Some profilepic');
+	});
+	andThen(function() {
+		ok(Result.isValid(),'Check valid');
+	}); 
+	
+});

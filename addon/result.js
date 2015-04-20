@@ -26,8 +26,6 @@ export default Ember.Object.extend({
 	 */
 	messages: Ember.computed.readOnly('_messages'),
 	
-	_validations: null,
-
 	/**
 	 * Messages emitted by the validator(s)
 	 * 
@@ -37,6 +35,23 @@ export default Ember.Object.extend({
 	 */
 	_messages: null,
 	
+	/**
+	 * Valid state for properties that were validated by the validator(s)
+	 * 
+	 * @property validations
+	 * @type Object 
+	 * @readOnly
+	 */
+	validations: Ember.computed.readOnly('_validations'),
+	
+	/**
+	 * Valid state for properties that were validated by the validator(s)
+	 * 
+	 * @property validations
+	 * @type Object 
+	 * @private
+	 */
+	_validations: null,
 	
 	/**
 	 * Running validators refcounter
@@ -73,6 +88,15 @@ export default Ember.Object.extend({
 	},
 	
 	/**
+	 * Indicates if there are no validators running for this result object 
+	 * @method hasFinished
+	 * @return {Boolean} True if there are no validators running
+	 */
+	hasFinished: function() {
+		return this._valCount===0;
+	},
+	
+	/**
 	 * Initialize result
 	 * @method init
 	 * @protected
@@ -90,10 +114,8 @@ export default Ember.Object.extend({
 				}
 			}
 			
-		}		
-		if(!this.getErrorCount(context.path)){
-			this.setValid(context);
-		}
+		}				
+		this._validations[context.path]=this.getErrorCount(context.path)===0;
 	},
 	
 	setValidation:function(context,valid) {
@@ -130,41 +152,42 @@ export default Ember.Object.extend({
 				for(var path in this._validations) {
 					if(path.substr(0,context.path.length)===context.path) {
 						if(this._messages[path]!==undefined) {
-							this._messages[path]=Ember.A();
+							delete this._messages[path];
 						}
-						this._validations[path]=false;
+						delete this._validations[path];
 					}
 				}
 				
 			}
 			else {
-				this._messages[context.path]=Ember.A();
-				this._validations[context.path]=false;
+				delete this._messages[context.path];
+				delete this._validations[context.path];
 			}
 		} else {
+			this.set('_validations', {});
 			this.set('_messages', {});		
 		}
 	},
 	
-	addError:function(context,message,attributes) {
+	addError:function(context,message,attributes,display) {
 		this.setInvalid();
-		this.addMessage(context,message,'error',attributes);
+		this.addMessage(context,message,'error',attributes,display);
 		return this;
 	},
 	
-	addWarning:function(context,message,attributes) {
+	addWarning:function(context,message,attributes,display) {
 		this.setInvalid();
-		this.addMessage(context,message,'warning',attributes);
+		this.addMessage(context,message,'warning',attributes,display);
 		return this;
 	},
 	
-	addNotice:function(context,message,attributes) {
+	addNotice:function(context,message,attributes,display) {
 		this.setInvalid();
-		this.addMessage(context,message,'notice',attributes);
+		this.addMessage(context,message,'notice',attributes,display);
 		return this;
 	},
 	
-	addMessage:function(context,message,type,attributes) {
+	addMessage:function(context,message,type,attributes,display) {
 		if(!this._messages[context.path]) {
 			this._messages[context.path]=Ember.A();
 		}
@@ -174,7 +197,8 @@ export default Ember.Object.extend({
 				path: context.path,
 				name: context.name,
 				type:type,
-				attributes:attributes
+				attributes:attributes || null,
+				display: display || 'immediate'
 			}));
 		return this;
 	},

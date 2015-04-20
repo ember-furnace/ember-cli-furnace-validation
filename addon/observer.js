@@ -26,11 +26,9 @@ var Observer = Ember.Object.extend({
 	
 	_chain : null,
 	
-	_getValue : function() {
-		if(!this._target) {
-			
-		}
-		return this._target.get(this._key);
+	_getValue : function() {		
+		Ember.assert('Validation observer received an unobservable object',Ember.Observable.detect(this._target));
+		return Ember.get(this._target,this._key);
 	},
 	
 	_orgValue : null,
@@ -52,41 +50,49 @@ var Observer = Ember.Object.extend({
 
 		this._children=Ember.A();
 		
-		if(this._chain.length>21) {
+		if(this._chain.length>100) {
 			console.log(this._chain);
-			console.log(this._chain.filterBy('target',this._target));
-			Ember.debug(this._target);
-			throw "whoops";
+			throw "Too much recursion?";
+		}
+		var chain =this._chain.filterBy('target',this._target).filterBy('key',this._key);
+		if(chain.length!==0) {
+			if(chain.filterBy('validator',this._validator).length===0) {
+				this._validator._observe(this);
+			}
+		}
+		else {
+			this._chain.push({target : this._target,key: this._key,validator:this._validator});		
+			this._orgValue=this._getValue();
+			this._validator._observe(this);
+			this._attach();	
 		}
 		
-		if(this._chain.filterBy('target',this._target).filterBy('key',this._key).length!==0) {
-			return;
-		}
-		
-		this._chain.push({target : this._target,key: this._key});		
-		this._orgValue=this._getValue();
-		this._validator._observe(this);
-		this._attach();
 		
 	},
 	
 	_detach:function() {
 		this._target.removeObserver(this._key,this,this._fn);
-		for(var i=0;i<this._keys.length;i++) {
-			this._orgValue.removeObserver(this._keys[i],this,this._fn);
+		if(Ember.Observable.detect(this._orgValue)) {
+			for(var i=0;i<this._keys.length;i++) {
+				this._orgValue.removeObserver(this._keys[i],this,this._fn);
+			}
 		}
 	},
 	
 	_attach: function() {
 		this._target.addObserver(this._key,this,this._fn);
-		for(var i=0;i<this._keys.length;i++) {
-			this._getValue().addObserver(this._keys[i],this,this._fn);
+		if(Ember.Observable.detect(this._getValue())) {
+			for(var i=0;i<this._keys.length;i++) {
+				this._getValue().addObserver(this._keys[i],this,this._fn);
+			}
 		}
 	},
 
 	_observeKey: function(key) {
 		this._keys.push(key);
-		this._getValue().addObserver(key,this,this._fn);		
+		if(Ember.Observable.detect(this._getValue())) {
+			this._getValue().addObserver(key,this,this._fn);
+		}
 	},
 	
 	_observe : function(key,validator,keepContext) {

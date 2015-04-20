@@ -45,6 +45,14 @@ export default Ember.Object.extend({
 	message: 'unknown',
 	
 	/**
+	 * For UI purposes when the user should be bugged with this message. (immediate|delayed|focus|blur)
+	 * @property: display
+	 * @type String
+	 * @default: "immediate"
+	 */
+	display: 'immediate',
+	
+	/**
 	 * Attributes provided by the validaton
 	 * @property attributes
 	 * @type Mixed

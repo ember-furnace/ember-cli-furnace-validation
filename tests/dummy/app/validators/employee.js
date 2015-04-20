@@ -9,6 +9,8 @@ export default Validation.State.extend({
 	})
 	
 }).cond(function(object) {
+	if(object===null)
+		return [];
 	switch(object.get('position')) {
 	case 'Manager':
 		return ['person','employee','manager'];

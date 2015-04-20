@@ -39,12 +39,14 @@ export default Validator.extend({
 		}
 		if(this.get('min')!==false) {
 			if(length<this.min) {
-				result.addError(context,'tooShort',[this.get('min')]);
+				result.addError(context,'tooShort',[this.get('min')],'delayed');
 			}
 		}
 		if(this.get('max')!==false) {
 			if(length>this.max) {
 				result.addError(context,'tooLong',[this.get('max')]);
+			} else if(length> this.max-this.max/5) {
+				result.addNotice(context,'stringLength',[length,this.get('max')],'focus');
 			}
 		}
 		
@@ -52,8 +54,8 @@ export default Validator.extend({
 
 	checkObject: function(context,value,result) {
 		var length=value ? value.length : 0;
-		if(length===undefined) {
-			length=0;
+		if(length===undefined || length===0) {
+			return;
 		}
 		if(this.get('exact')!==false) {
 			if(length!==this.exact) {
@@ -68,6 +70,8 @@ export default Validator.extend({
 		if(this.get('max')!==false) {
 			if(length>this.max) {
 				result.addError(context,'tooLong',[this.get('max')]);
+			} else if(length> this.max-this.max/5) {
+				result.addNotice(context,'objectLength',[length,this.get('max')],'focus');
 			}
 		}
 		

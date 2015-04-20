@@ -30,7 +30,10 @@ test("Check validator", function( ) {
 	ok(!result.isValid(),'Check undefined invalid');		
 	
 	result = Validator.validate("");
-	ok(!result.isValid(),'Check empty string invalid');		
+	ok(!result.isValid(),'Check empty string invalid');
+	
+	result = Validator.validate(false);
+	ok(!result.isValid(),'Check false string invalid');		
 	
 	result = Validator.validate(0);
 	ok(result.isValid(),'Check 0 valid');
@@ -41,4 +44,7 @@ test("Check validator", function( ) {
 	
 	result = Validator.validate({});
 	ok(result.isValid(),'Check object valid');		
+	
+	result = Validator.validate(true);
+	ok(result.isValid(),'Check true valid');
 });
