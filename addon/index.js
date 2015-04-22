@@ -15,24 +15,8 @@ import EnumItemValidator from './validators/enum-item';
 import CollectionValidator from './validators/collection';
 import Ember from 'ember';
 
-/**
- * Normalize validator and options arguments 
- * @private
- */
-var getValidators=function(validators,options) {	
-	if(typeof validators === 'string') {
-		var name=validators;
-		validators={};
-		if(!options)
-			options=true;
-		validators[name]=options;
-	}
-	else {
-		Ember.assert("You should either pass the name of a single validator or a hash with validator:options",typeof validators==='object');
-		Ember.assert("When passing multiple validators, options should be in the validators hash",!options);
-	}
-	return validators;
-};
+import getOptions from './utils/get-options';
+import getValidator from './utils/get-validator';
 
 /**
  * Get meta for computed properties
@@ -61,31 +45,8 @@ var getComputed=function(enumerable) {
 				this._validators[key]=meta.collection.create();
 				
 				var validators=meta.validators;
-				for(var validator in validators) {
-					var options=validators[validator];
-					if(options) {
-						if(options===true) {
-							// It was indicated just to append this validator without any options.
-							// By passing null we can get a cached instance.
-							options=null;
-						}						
-					}
-					var _validator;
-					switch(validator) { 
-						case 'enum':
-							_validator=EnumItemValidator.create({_validators : options,container: this.container});
-							break;
-						case 'state':
-							_validator=StateValidator.extend(options).create({container: this.container});
-							break;
-						case 'object':
-							_validator=ObjectValidator.extend(options).create({container: this.container});
-							break;
-						default:
-							_validator=this.validatorFor(validator,options);
-							break;
-					}
-					this._validators[key].push(_validator);
+				for(var validator in validators) {					
+					this._validators[key].push(getValidator.call(this,validator,validators[validator]));
 					
 				}
 			}
@@ -113,6 +74,15 @@ export default {
 	 * @static
 	 */
 	Object: ObjectValidator,
+	
+	/**
+	 * CollectionValidator
+	 * @property Object
+	 * @type Furnace.Validation.CollectionValidator
+	 * @for Furnace.Validation
+	 * @static
+	 */
+	Collection: CollectionValidator,
 	
 	/**
 	 * StateValidator
@@ -146,14 +116,14 @@ export default {
 	enum : function(validators,options) {
 		var listValidators={};
 		if(validators) {
-			listValidators=getValidators(validators,options);
+			listValidators=getOptions(validators,options);
 		}
 		var meta = getMeta(listValidators,EnumValidator);
 		
 		var list = getComputed(true).meta(meta);
 		list.val = function(validators,options) {
 			var itemValidators=this._meta.validators || {};
-			itemValidators['enum']=getValidators(validators,options);
+			itemValidators['enum']=getOptions(validators,options);
 			var meta = getMeta(itemValidators);
 			return this.meta(meta);
 		};
@@ -170,7 +140,20 @@ export default {
 	 * @return Ember.ComputedProperty 
 	 */
 	object: function(options) {
-		 return this.val('object' ,options);
+		return this.val('object' ,options);
+	},
+	
+	/**
+	 * Extend and add a collection validator
+	 * 
+	 * @method collection
+	 * @static
+	 * @for Furnace.Validation
+	 * @param options {Object} CollectionValidator validator collection
+	 * @return Ember.ComputedProperty 
+	 */
+	collection : function(options) {
+		return this.val('collection' ,options);
 	},
 	
 	/**
@@ -202,7 +185,7 @@ export default {
 	 * @return Ember.ComputedProperty 
 	 */
 	val : function(validators,options) {
-		validators=getValidators(validators,options);
+		validators=getOptions(validators,options);
 		
 		var meta = getMeta(validators);
 		return getComputed().meta(meta).readOnly();
