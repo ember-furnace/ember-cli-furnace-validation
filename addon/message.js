@@ -66,7 +66,7 @@ export default Ember.Object.extend({
 	 * @return {String} Returns a furnace-i18n compatible string of the message
 	 */
 	toString: function() {
-		return 'validation.'+this.type+'.'+this.message;
+		return this.message;
 	}
 	
 });

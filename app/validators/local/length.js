@@ -2,9 +2,25 @@ import Ember from 'ember';
 import Validator from 'furnace-validation/validators/property';
 
 export default Validator.extend({
+	
 	min: false,
+	
 	max: false,
+	
 	exact : false,
+	
+	messages : {
+		
+		stringWrongLength : 'stringWrongLength',
+		stringTooShort : 'stringTooShort',
+		stringTooLong : 'stringTooLong',
+		stringLength : 'stringLength',
+		
+		objectWrongLength : 'objectWrongLength',
+		objectTooShort : 'objectTooShort',
+		objectTooLong : 'objectTooLong',
+		objectLength : 'objectLength',
+	},
 	
 	call : function(context,value,result) {		
 		switch(typeof value) {
@@ -34,19 +50,19 @@ export default Validator.extend({
 		var length=value.length;
 		if(this.get('exact')!==false) {
 			if(length!==this.exact) {
-				result.addError(context,'wrongLength',[this.get('exact')]);
+				result.addError(context,this.messages.stringWrongLength,[this.get('exact'),length]);
 			}
 		}
 		if(this.get('min')!==false) {
 			if(length<this.min) {
-				result.addError(context,'tooShort',[this.get('min')],'delayed');
+				result.addError(context,this.messages.stringTooShort,[this.get('min'),length,this.get('min')-length],'delayed');
 			}
 		}
 		if(this.get('max')!==false) {
 			if(length>this.max) {
-				result.addError(context,'tooLong',[this.get('max')]);
+				result.addError(context,this.messages.stringTooLong,[this.get('max'),length,length-this.get('max')]);
 			} else if(length> this.max-this.max/5) {
-				result.addNotice(context,'stringLength',[length,this.get('max')],'focus');
+				result.addNotice(context,this.messages.stringLength,[this.get('max'),length,this.get('max')-length],'focus');
 			}
 		}
 		
@@ -59,19 +75,19 @@ export default Validator.extend({
 		}
 		if(this.get('exact')!==false) {
 			if(length!==this.exact) {
-				result.addError(context,'wrongLength',[this.get('exact')]);
+				result.addError(context,this.messages.objectWrongLength,[this.get('exact'),length]);
 			}
 		}
 		if(this.get('min')!==false) {
 			if(length<this.min) {
-				result.addError(context,'tooShort',[this.get('min')]);
+				result.addError(context,this.messages.objectTooShort,[this.get('min'),length,this.get('min')-length]);
 			}
 		}
 		if(this.get('max')!==false) {
 			if(length>this.max) {
-				result.addError(context,'tooLong',[this.get('max')]);
+				result.addError(context,this.messages.objectTooLong,[this.get('max'),length,length-this.get('max')]);
 			} else if(length> this.max-this.max/5) {
-				result.addNotice(context,'objectLength',[length,this.get('max')],'focus');
+				result.addNotice(context,this.messages.objectLength,[this.get('max'),length,this.get('max')-length],'focus');
 			}
 		}
 		

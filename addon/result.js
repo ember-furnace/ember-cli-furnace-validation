@@ -191,6 +191,9 @@ export default Ember.Object.extend({
 		if(!this._messages[context.path]) {
 			this._messages[context.path]=Ember.A();
 		}
+		if(message.indexOf('.')===-1) {
+			message='validation.'+type+'.'+message;
+		}
 		this._messages[context.path].push(Message.create({
 				message: message,
 				key: context.key,
