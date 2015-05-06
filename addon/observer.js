@@ -72,6 +72,10 @@ var Observer = Ember.Object.extend({
 	
 	_detach:function() {
 		this._target.removeObserver(this._key,this,this._fn);
+		this._detachKeys();
+	},
+	
+	_detachKeys:function() {
 		if(Ember.Observable.detect(this._orgValue)) {
 			for(var i=0;i<this._keys.length;i++) {
 				this._orgValue.removeObserver(this._keys[i],this,this._fn);
@@ -81,6 +85,10 @@ var Observer = Ember.Object.extend({
 	
 	_attach: function() {
 		this._target.addObserver(this._key,this,this._fn);
+		this._attachKeys();
+	},
+	
+	_attachKeys: function() {
 		if(Ember.Observable.detect(this._getValue())) {
 			for(var i=0;i<this._keys.length;i++) {
 				this._getValue().addObserver(this._keys[i],this,this._fn);
@@ -200,7 +208,7 @@ var Observer = Ember.Object.extend({
 			}
 			
 			if(this._keys.length) {
-				this._detach();
+				this._detachKeys();
 			}
 			
 			this._orgValue=sender.get(key);
@@ -208,7 +216,7 @@ var Observer = Ember.Object.extend({
 			this._context.value=sender.get(key);
 
 			if(this._keys.length) {
-				this._attach();
+				this._attachKeys();
 			}
 			
 		}	
@@ -231,6 +239,8 @@ var Observer = Ember.Object.extend({
 		});
 		
 		if(this._orgValue) {
+			// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
+			this._chain.pop();
 			this._validator._observe(this);
 		}
 	},	
