@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import createContext from './utils/context';
 import Result from './result';
+import Queue from './observer-queue';
 
 /**
  * Observer for automatic object validation
@@ -35,6 +36,8 @@ var Observer = Ember.Object.extend({
 	
 	_children : null,
 	
+	_queue : null,
+	
 	init : function() {
 		
 		if(!this._result) {
@@ -45,6 +48,9 @@ var Observer = Ember.Object.extend({
 		}
 		if(this._chain===null) {
 			this._chain=Ember.A();
+		}
+		if(this._queue===null) {
+			this._queue=Queue.create({callback: this._callback});
 		}
 		this._keys=[];
 
@@ -119,11 +125,12 @@ var Observer = Ember.Object.extend({
 			var _self=this;
 			value.forEach(function(item,index) {
 				var newChain=_self._chain.copy();
-				observer=Observer.create({
+				observer=Observer.create({					
 					_validator : validator,
 					_target : item,
 					_key : key,
 					_callback : _self._callback,
+					_queue : _self._queue,
 					_context : _self._context.nest(index,item),
 					_chain : newChain
 				});
@@ -137,6 +144,7 @@ var Observer = Ember.Object.extend({
 					_key : this._key+'.'+key,
 					_callback : this._callback,
 					_context : this._context,
+					_queue : _self._queue,
 					_chain : newChain
 				});
 			} else {
@@ -202,48 +210,48 @@ var Observer = Ember.Object.extend({
 	},
 	
 	_fn: function(sender, key, value, rev){
-		if(key===this._key) {
-			if(sender.get(key)===this._orgValue) {
-				return;
-			}
+		// We need to run this later because of delay in ember-data relationship availablility. Better run it once as well.
+		Ember.run.once(this,function() {
 			
-			if(this._keys.length) {
-				this._detachKeys();
-			}
+			if(key===this._key) {
+				if(sender.get(key)===this._orgValue) {
+					return;
+				}
+				
+				if(this._keys.length) {
+					this._detachKeys();
+				}
+				
+				this._orgValue=sender.get(key);
+	
+				this._context.value=sender.get(key);
+	
+				if(this._keys.length) {
+					this._attachKeys();
+				}
+				
+			}	
 			
-			this._orgValue=sender.get(key);
+			if(this._children) {
+				this._children.forEach(function(child) {
+					child.destroy();
+				});
+				this._children.clear();
+			}
 
-			this._context.value=sender.get(key);
-
-			if(this._keys.length) {
-				this._attachKeys();
-			}
+			this._queue.push(this._validator,this._context,sender);
+			this._queue.run();
 			
-		}	
-		this._context.result.reset(this._context,true);
-		this._context.resetStack();
-		
-		if(this._children) {
-			this._children.forEach(function(child) {
-				child.destroy();
-			});
-			this._children.clear();
-		}
-		
-		var context=this._context;
-		var callback=this._callback;
-		
-		this._validator._validate(this._context).then(function(result){
-			result.updateValidity(context,true);
-			callback(result,sender,key);
+			if(this._orgValue) {
+				// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
+				this._chain.pop();
+				// We re-observe to re-add children, but it seems we may "re-observe" ourselve as well like this.
+				this._validator._observe(this);
+			}
 		});
-		
-		if(this._orgValue) {
-			// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
-			this._chain.pop();
-			this._validator._observe(this);
-		}
 	},	
+	
+	
 	
 });
 export default Observer;
