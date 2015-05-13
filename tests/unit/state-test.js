@@ -27,31 +27,31 @@ test("States", function( ) {
 
 	Validator=Model.validatorFor();
 	Validator.validate(Model).then(function(result) {
-		ok(!result.isValid(),'Check invalid');
+		equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Model.set('lastName','Anderson');
 	
 	Validator.validate(Model).then(function(result) {
-		ok(!result.isValid(),'Check invalid');
+		equal(result.isValid(),false,'Check invalid');
 	});
 	
 	Model.set('position','Clerk');
 	
 	Validator.validate(Model).then(function(result) {
-		ok(result.isValid(),'Check valid');
+		equal(result.isValid(),true,'Check valid');
 	}); 
 	
 	Model.set('position','Manager');
 	
 	Validator.validate(Model).then(function(result) {
-		ok(!result.isValid(),'Check invalid');
+		equal(result.isValid(),false,'Check invalid');
 	});
 	
 	Model.set('picture','Some profilepic');
 	
 	Validator.validate(Model).then(function(result) {
-		ok(result.isValid(),'Check valid');
+		equal(result.isValid(),true,'Check valid');
 	});
 });
 

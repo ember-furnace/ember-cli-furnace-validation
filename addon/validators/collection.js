@@ -2,7 +2,6 @@ import Ember from 'ember';
 import Promise from './promise';
 import Validation from '../index';
 import getOptions from '../utils/get-options';
-import getValidator from '../utils/get-validator';
 /**
  * Collection of validators, wrapping different validators into one promise
  * 
@@ -34,7 +33,7 @@ export default Promise.extend({
 	init : function() {
 		this._validatorArray=Ember.A();
 		for(var validator in this._validators) {
-			this._validatorArray.pushObject(getValidator.call(this,validator,this._validators[validator]));
+			this._validatorArray.pushObject(this._getValidator.call(this,validator,this._validators[validator]));
 		}
 	},
 	

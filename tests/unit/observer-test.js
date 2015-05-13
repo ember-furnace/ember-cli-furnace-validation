@@ -37,13 +37,13 @@ test("Single model", function( ) {
 		Target.set('model',Model);
 	});
 	andThen(function() {
-		ok(!Result.isValid(),'Check invalid');
+		equal(Result.isValid(),false,'Check invalid');
 	});
 	andThen(function() {
 		Model.set('lastName','Anderson');
 	});
 	andThen(function() {
-		ok(Result.isValid(),'Check valid');
+		equal(Result.isValid(),true,'Check valid');
 	}); 
 });
 
@@ -70,13 +70,13 @@ test("Nested models", function( ) {
 		Target.set('model',Model);
 	});
 	andThen(function() {
-		ok(!Result.isValid(),'Check invalid');
+		equal(Result.isValid(),false,'Check invalid');
 	});
 	andThen(function(){
 		Model2.set('city','Addison');
 	});
 	andThen(function() {
-		ok(Result.isValid(),'Check valid');
+		equal(Result.isValid(),true,'Check valid');
 	}); 
 });
 
@@ -104,13 +104,13 @@ test("Nested models with circular reference", function( ) {
 		Target.set('model',Model);
 	});
 	andThen(function() {
-		ok(!Result.isValid(),'Check invalid');
+		equal(Result.isValid(),false,'Check invalid');
 	}); 
 	andThen(function(){
 		Model2.set('lastName','Brooks');
 	}); 
 	andThen(function() {
-		ok(Result.isValid(),'Check valid');
+		equal(Result.isValid(),true,'Check valid');
 	}); 
 });
 
@@ -123,7 +123,6 @@ test("Nested models in a list", function( ) {
 		Model2=Store.createRecord('person',{firstName: 'Brian',
 											lastName: ''});
 				
-		Model.get('friends').pushObject(Model2);
 	});
 
 	Validator=Model.validatorFor();
@@ -136,21 +135,29 @@ test("Nested models in a list", function( ) {
 		Target.set('model',Model);
 	});
 	andThen(function() {
-		ok(!Result.isValid(),'Check invalid');
-	}); 
-	andThen(function() {
-		Model2.set('lastName','Brooks');
-	});
-	andThen(function() {
-		ok(Result.isValid(),'Check valid');
+		equal(Result.isValid(),true,'Check valid');
 	}); 
 	
 	andThen(function() {
-		Model2.set('lastName','');
+		Model.get('friends').pushObject(Model2);
 	});
 	andThen(function() {
-		ok(!Result.isValid(),'Check invalid');
-	}); 
+		equal(Result.isValid(),false,'Check invalid');
+	});
+//	
+//	andThen(function() {
+//		Model2.set('lastName','Brooks');
+//	});
+//	andThen(function() {
+//		equal(Result.isValid(),true,'Check valid');
+//	}); 
+//	
+//	andThen(function() {
+//		Model2.set('lastName','');
+//	});
+//	andThen(function() {
+//		equal(Result.isValid(),false,'Check invalid');
+//	}); 
 	
 });
 
@@ -177,13 +184,13 @@ test("Nested models in a list with circular reference", function( ) {
 		Target.set('model',Model);
 	});
 	andThen(function() {
-		ok(!Result.isValid(),'Check invalid');
+		equal(Result.isValid(),false,'Check invalid');
 	}); 
 	andThen(function() {
 		Model2.set('lastName','Brooks');
 	});
 	andThen(function() {
-		ok(Result.isValid(),'Check valid');
+		equal(Result.isValid(),true,'Check valid');
 	}); 
 	
 	
@@ -208,7 +215,7 @@ test("States", function( ) {
 	});
 	
 	andThen(function() {
-		ok(!Result.isValid(),'Check invalid');
+		equal(Result.isValid(),false,'Check invalid');
 	}); 
 	
 	andThen(function() {
@@ -216,7 +223,7 @@ test("States", function( ) {
 	});
 	
 	andThen(function() {
-		ok(!Result.isValid(),'Check invalid');
+		equal(Result.isValid(),false,'Check invalid');
 	});
 	
 	andThen(function() {
@@ -224,20 +231,20 @@ test("States", function( ) {
 	});
 	
 	andThen(function() {
-		ok(Result.isValid(),'Check valid');
+		equal(Result.isValid(),true,'Check valid');
 	}); 
 	
 	andThen(function() {
 		Model.set('position','Manager');
 	});
 	andThen(function() {
-		ok(!Result.isValid(),'Check invalid');
+		equal(Result.isValid(),false,'Check invalid');
 	});
 	andThen(function() {
 		Model.set('picture','Some profilepic');
 	});
 	andThen(function() {
-		ok(Result.isValid(),'Check valid');
+		equal(Result.isValid(),true,'Check valid');
 	});
 	
 	
@@ -246,7 +253,7 @@ test("States", function( ) {
 	});
 	
 	andThen(function() {
-		ok(Result.isValid(),'Check valid');
+		equal(Result.isValid(),true,'Check valid');
 	}); 
 	
 	andThen(function() {
@@ -255,13 +262,13 @@ test("States", function( ) {
 	});
 	
 	andThen(function() {
-		ok(!Result.isValid(),'Check invalid');
+		equal(Result.isValid(),false,'Check invalid');
 	});
 	andThen(function() {
 		Model.set('picture','Some profilepic');
 	});
 	andThen(function() {
-		ok(Result.isValid(),'Check valid');
+		equal(Result.isValid(),true,'Check valid');
 	}); 
 	
 });

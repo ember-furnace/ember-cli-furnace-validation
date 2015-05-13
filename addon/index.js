@@ -10,9 +10,9 @@ import ObjectValidator from './validators/object';
 import StateValidator from './validators/state';
 import PropertyValidator from './validators/property';
 import PromiseValidator from './validators/promise';
+import CollectionValidator from './validators/collection';
 import EnumValidator from './validators/enum';
 import EnumItemValidator from './validators/enum-item';
-import CollectionValidator from './validators/collection';
 import Ember from 'ember';
 
 import getOptions from './utils/get-options';

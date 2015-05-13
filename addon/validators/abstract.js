@@ -13,6 +13,8 @@ import createContext from '../utils/context';
  */
 export default Ember.Object.extend({
 	
+	_debugLogging : false,
+	
 	/**
 	 * Run validation 
 	 * 
@@ -46,6 +48,9 @@ export default Ember.Object.extend({
 	 */
 	_validate : function(context) {
 		context.result._valCountIncrease();
+		if(this._debugLogging) {
+			this._logEvent('Validating',context.path);
+		}
 		this.call(context,context.value,context.result);
 		context.result._valCountDecrease();
 		return context.result;
@@ -89,5 +94,11 @@ export default Ember.Object.extend({
 	
 	_observe : function(observer) {
 		
+	},
+	
+	_logEvent : function() {
+		var args=arguments;
+		args[0]='Validator '+this.toString()+': ' + arguments[0];
+		Ember.Logger.info.apply(this,args);
 	}
 });

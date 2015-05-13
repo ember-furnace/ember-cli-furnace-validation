@@ -25,6 +25,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+	  
   }
 
   if (environment === 'test') {
@@ -35,7 +36,8 @@ module.exports = function(environment) {
     // keep test console output quieter
     ENV.APP.LOG_ACTIVE_GENERATION = false;
     ENV.APP.LOG_VIEW_LOOKUPS = false;
-
+    ENV.APP.LOG_VALIDATIONS = true;
+	  ENV.APP.LOG_VALIDATION_OBSERVER = true;
     ENV.APP.rootElement = '#ember-testing';
   }
 

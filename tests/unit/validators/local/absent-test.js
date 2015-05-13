@@ -21,23 +21,23 @@ test("Check validator", function( ) {
 	ok(Validator instanceof PropertyValidator, 'Check instance');
 	
 	result = Validator.validate(null);
-	ok(result.isValid(),'Check null valid');	
+	equal(result.isValid(),true,'Check null valid');	
 	ok(result.getMessages().length===0,'Check messages length');
 	
 	result = Validator.validate(undefined);
-	ok(result.isValid(),'Check undefined valid');		
+	equal(result.isValid(),true,'Check undefined valid');		
 	
 	result = Validator.validate("");
-	ok(result.isValid(),'Check empty string valid');		
+	equal(result.isValid(),true,'Check empty string valid');		
 	
 	result = Validator.validate(0);
-	ok(!result.isValid(),'Check 0 invalid');
-	ok(result.getMessages().length===1,'Check messages length');		
-	ok(result.getMessages('value')[0].message==='present','Check message name');
+	equal(result.isValid(),false,'Check 0 invalid');
+	equal(result.getMessages().length,1,'Check messages length');		
+	equal(result.getMessages('value')[0].message,'validation.error.present','Check message name');
 	
 	result = result = Validator.validate("test");
-	ok(!result.isValid(),'Check string invalid');		
+	equal(result.isValid(),false,'Check string invalid');		
 	
 	result = Validator.validate({});
-	ok(!result.isValid(),'Check object invalid');		
+	equal(result.isValid(),false,'Check object invalid');		
 });

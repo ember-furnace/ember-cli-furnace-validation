@@ -3,6 +3,8 @@ import Ember from 'ember';
 export default Ember.Object.extend({
 	callback : null,
 	
+	_debugLogging: false,
+	
 	_queue :  null,
 	
 	_running : false,
@@ -15,6 +17,15 @@ export default Ember.Object.extend({
 	
 	push: function(validator,context,sender) {
 		this.length++;
+		this._queue.forEach(function(queued) {
+			if(queued.validator===validator && queued.context.path===context.path) {
+				Ember.warn('Skipping already queued path, this has not been tested');
+				return;
+			}
+		});
+		if(this._debugLogging) {
+			this._logEvent('New in queue ('+this.length+')',validator.toString(),context.path);
+		}
 		this._queue.push({validator : validator, context: context,sender: sender});
 	},
 	
@@ -30,20 +41,32 @@ export default Ember.Object.extend({
 		var queue=this;
 		var next=this._queue.shift();
 		if(next) {
-			this.length--;
 			
 			next.context.result.reset(next.context,true);
 			next.context.resetStack();
-			
 			next.validator._validate(next.context).then(function(result){
 				result.updateValidity(next.context,true);
+				queue.length--;
 				queue._running=false;
-				if(queue.length)
+				if(queue.length) {
+					if(queue._debugLogging) {
+						queue._logEvent('Next in queue',queue._queue.get('firstObject').sender.toString(),queue._queue.get('firstObject').context.path);
+					}
 					queue.run();
-				else
+				}else {
+					if(queue._debugLogging) {
+						queue._logEvent('Queue clear, running callback',next.sender.toString(),next.context.path);
+					}
 					queue.callback(result,next.sender,next.context.key);
+				}
 			});
 		}
 		
+	},
+	
+	_logEvent : function() {
+		var args=arguments;
+		args[0]='Validation queue: ' + arguments[0];
+		Ember.Logger.info.apply(this,args);
 	}
 });

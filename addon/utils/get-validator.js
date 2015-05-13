@@ -7,11 +7,11 @@
 import ObjectValidator from '../validators/object';
 import StateValidator from '../validators/state';
 import PropertyValidator from '../validators/property';
+import CollectionValidator from '../validators/collection';
 import EnumValidator from '../validators/enum';
 import EnumItemValidator from '../validators/enum-item';
-import CollectionValidator from '../validators/collection';
 
-export default function getValidator(validator,options) {	
+function getValidator(validator,options) {	
 	if(options) {
 		if(options===true) {
 			// It was indicated just to append this validator without any options.
@@ -41,4 +41,9 @@ export default function getValidator(validator,options) {
 			break;
 	}
 	return _validator;
-};
+}
+
+CollectionValidator.reopen({
+	_getValidator:getValidator
+});
+export default getValidator;

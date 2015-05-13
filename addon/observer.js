@@ -11,6 +11,8 @@ import Queue from './observer-queue';
  */
 var Observer = Ember.Object.extend({
 	
+	_debugLogging : false,
+	
 	_validator : null,
 	
 	_target : null,
@@ -29,7 +31,11 @@ var Observer = Ember.Object.extend({
 	
 	_getValue : function() {		
 		Ember.assert('Validation observer received an unobservable object',Ember.Observable.detect(this._target));
-		return Ember.get(this._target,this._key);
+		var value = Ember.get(this._target,this._key);
+		if(Ember.PromiseProxyMixin.detect(value)) {
+			value=value.content;
+		} 
+		return value;
 	},
 	
 	_orgValue : null,
@@ -61,7 +67,7 @@ var Observer = Ember.Object.extend({
 			throw "Too much recursion?";
 		}
 		var chain =this._chain.filterBy('target',this._target).filterBy('key',this._key);
-		if(chain.length!==0) {
+		if(chain.length!==0) {			
 			if(chain.filterBy('validator',this._validator).length===0) {
 				this._validator._observe(this);
 			}
@@ -90,6 +96,9 @@ var Observer = Ember.Object.extend({
 	},
 	
 	_attach: function() {
+		if(this._debugLogging) {
+			this._logEvent('Observing',this._target.toString(),this._key);
+		}
 		this._target.addObserver(this._key,this,this._fn);
 		this._attachKeys();
 	},
@@ -119,7 +128,6 @@ var Observer = Ember.Object.extend({
 		var observer=null;
 		
 		var value=this._getValue();
-		
 		if(value instanceof Ember.EachProxy) {
 			value=value.get('_content');
 			var _self=this;
@@ -144,7 +152,7 @@ var Observer = Ember.Object.extend({
 					_key : this._key+'.'+key,
 					_callback : this._callback,
 					_context : this._context,
-					_queue : _self._queue,
+					_queue : this._queue,
 					_chain : newChain
 				});
 			} else {
@@ -155,6 +163,7 @@ var Observer = Ember.Object.extend({
 						_key : key,
 						_callback : this._callback,
 						_context : this._context.nest(key),
+						_queue : this._queue,
 						_chain : newChain
 					});
 				}else  {				
@@ -164,6 +173,7 @@ var Observer = Ember.Object.extend({
 						_key : this._key,
 						_callback : this._callback,
 						_context : this._context,
+						_queue : this._queue,
 						_chain : newChain
 					});
 				}
@@ -209,48 +219,63 @@ var Observer = Ember.Object.extend({
 		return this._context.result;
 	},
 	
+	_fnOnce : function(sender, key, value, rev) {
+		
+		if(key===this._key) {
+			if(this._getValue()===this._orgValue && !Ember.MutableArray.detect(this._getValue())) {
+				if(this._debugLogging) {
+					this._logEvent('No change detected',sender.toString(),key);
+				}
+				return;
+			}
+			if(this._debugLogging) {
+				this._logEvent('Handeling change',sender.toString(),key);
+			}
+			if(this._keys.length) {
+				this._detachKeys();
+			}
+			
+			this._orgValue=this._getValue();
+
+			this._context.value=this._getValue();
+
+			if(this._keys.length) {
+				this._attachKeys();
+			}
+			
+		}	
+		
+		if(this._children) {
+			this._children.forEach(function(child) {
+				child.destroy();
+			});
+			this._children.clear();
+		}
+
+		this._queue.push(this._validator,this._context,sender);
+		this._queue.run();
+		
+		if(this._orgValue) {
+			// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
+			this._chain.pop();
+			// We re-observe to re-add children, but it seems we may "re-observe" ourselve as well like this.
+			this._validator._observe(this);
+		}
+	},
+	
 	_fn: function(sender, key, value, rev){
 		// We need to run this later because of delay in ember-data relationship availablility. Better run it once as well.
-		Ember.run.once(this,function() {
-			
-			if(key===this._key) {
-				if(sender.get(key)===this._orgValue) {
-					return;
-				}
-				
-				if(this._keys.length) {
-					this._detachKeys();
-				}
-				
-				this._orgValue=sender.get(key);
-	
-				this._context.value=sender.get(key);
-	
-				if(this._keys.length) {
-					this._attachKeys();
-				}
-				
-			}	
-			
-			if(this._children) {
-				this._children.forEach(function(child) {
-					child.destroy();
-				});
-				this._children.clear();
-			}
-
-			this._queue.push(this._validator,this._context,sender);
-			this._queue.run();
-			
-			if(this._orgValue) {
-				// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
-				this._chain.pop();
-				// We re-observe to re-add children, but it seems we may "re-observe" ourselve as well like this.
-				this._validator._observe(this);
-			}
-		});
+		if(this._debugLogging) {
+			this._logEvent('Observed change',sender.toString(),key);
+		}
+		Ember.run.once(this,this._fnOnce,sender, key, value, rev);
 	},	
 	
+	_logEvent : function() {
+		var args=arguments;
+		args[0]='Validation observer: ' + arguments[0];
+		Ember.Logger.info.apply(this,args);
+	}
 	
 	
 });

@@ -22,29 +22,29 @@ test("Check validator", function( ) {
 	ok(Validator instanceof PropertyValidator, 'Check instance');
 	
 	result = Validator.validate(null);
-	ok(!result.isValid(),'Check null invalid');
-	ok(result.getMessages().length===1,'Check messages length');		
-	ok(result.getMessages('value')[0].message==='blank','Check message name');
+	equal(result.isValid(),false,'Check null invalid');
+	equal(result.getMessages().length,1,'Check messages length');		
+	equal(result.getMessages('value')[0],'validation.error.blank','Check message name');
 
 	result = Validator.validate(undefined);
-	ok(!result.isValid(),'Check undefined invalid');		
+	equal(result.isValid(),false,'Check undefined invalid');		
 	
 	result = Validator.validate("");
-	ok(!result.isValid(),'Check empty string invalid');
+	equal(result.isValid(),false,'Check empty string invalid');
 	
 	result = Validator.validate(false);
-	ok(!result.isValid(),'Check false string invalid');		
+	equal(result.isValid(),false,'Check false string invalid');		
 	
 	result = Validator.validate(0);
-	ok(result.isValid(),'Check 0 valid');
-	ok(result.getMessages().length===0,'Check messages length');	
+	equal(result.isValid(),true,'Check 0 valid');
+	equal(result.getMessages().length,0,'Check messages length');	
 	
 	result = Validator.validate("test");
-	ok(result.isValid(),'Check string valid');		
+	equal(result.isValid(),true,'Check string valid');		
 	
 	result = Validator.validate({});
-	ok(result.isValid(),'Check object valid');		
+	equal(result.isValid(),true,'Check object valid');		
 	
 	result = Validator.validate(true);
-	ok(result.isValid(),'Check true valid');
+	equal(result.isValid(),true,'Check true valid');
 });

@@ -1,3 +1,4 @@
+import Ember from 'ember';
 /**
  * Normalize validator and options arguments 
  * @namespace Furnace.Validation
@@ -16,4 +17,4 @@ export default function getOptions(validators,options) {
 		Ember.assert("When passing multiple validators, options should be in the validators hash",!options);
 	}
 	return validators;
-};
+}

@@ -13,7 +13,9 @@ export default Promise.extend({
 	_validators: null,
 	
 	validator: Ember.computed(function() {
-		var ret = CollectionValidator.create();
+		var ret = CollectionValidator.create({
+			container:this.container
+		});
 		for(var name in this._validators) {
 			var options=this._validators[name]===true ? null : this._validators[name];
 			ret.push(this.validatorFor(name,options));				

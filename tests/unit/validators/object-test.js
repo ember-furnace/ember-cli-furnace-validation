@@ -21,23 +21,23 @@ test("Check validator", function( ) {
 	ok(Validator instanceof ObjectValidator, 'Check instance');
 	
 	Validator.validate("test").then(function(result) {
-		ok(!result.isValid(),'Check "string" invalid');		
+		equal(result.isValid(),false,'Check "string" invalid');		
 	});
 	
 	Validator.validate({}).then(function(result) {
-		ok(!result.isValid(),'Check "object" invalid');		
+		equal(result.isValid(),false,'Check "object" invalid');		
 	});
 	
 	Validator.validate(Ember.Object.create()).then(function(result) {
-		ok(result.isValid(),'Check "Ember.Object" valid');		
+		equal(result.isValid(),true,'Check "Ember.Object" valid');		
 	});
 	
 	Validator.set('typeCheck',ObjectValidator);
 	
 	Validator.validate(Ember.Object.create()).then(function(result) {
-		ok(!result.isValid(),'Check "TypeCheck" invalid');		
+		equal(result.isValid(),false,'Check "TypeCheck" invalid');		
 	});
 	Validator.validate(Validator).then(function(result) {
-		ok(result.isValid(),'Check "TypeCheck" valid');		
+		equal(result.isValid(),true,'Check "TypeCheck" valid');		
 	});
 });

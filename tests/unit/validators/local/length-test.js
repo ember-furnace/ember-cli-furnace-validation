@@ -22,46 +22,46 @@ test("Check validator (min)", function( ) {
 	result = Validator.validate(null);
 	
 	// Behavior has changed, check existence with required
-	//ok(!result.isValid(),'Check null invalid');
-	ok(result.isValid(),'Check null valid');
+	//equal(result.isValid(),false,'Check null invalid');
+	equal(result.isValid(),true,'Check null valid');
 		
 	result = Validator.validate(undefined);
 	// Behavior has changed, check existence with required
-	//ok(!result.isValid(),'Check undefined invalid');		
-	ok(result.isValid(),'Check undefined valid');
+	//equal(result.isValid(),false,'Check undefined invalid');		
+	equal(result.isValid(),true,'Check undefined valid');
 	
 	result = Validator.validate("");
 	// Behavior has changed, check existence with required
-	//ok(!result.isValid(),'Check empty string invalid');		
-	ok(result.isValid(),'Check empty string valid');		
+	//equal(result.isValid(),false,'Check empty string invalid');		
+	equal(result.isValid(),true,'Check empty string valid');		
 	
 	result = Validator.validate(0);
-	ok(!result.isValid(),'Check 0 invalid');	
-	ok(result.getMessages().length===1,'Check messages length');
-	ok(result.getMessages('value')[0].message==='tooShort','Check message name');
-	ok(result.getMessages('value')[0].attributes[0]===2,'Check message attribute');
+	equal(result.isValid(),false,'Check 0 invalid');	
+	equal(result.getMessages().length,1,'Check messages length');
+	equal(result.getMessages('value')[0].message,'validation.error.stringTooShort','Check message name');
+	equal(result.getMessages('value')[0].attributes[0],2,'Check message attribute');
 	
 	result = Validator.validate(123);
-	ok(result.isValid(),'Check 123 valid');		
+	equal(result.isValid(),true,'Check 123 valid');		
 	
 	result = Validator.validate("t");
-	ok(!result.isValid(),'Check short string invalid');		
+	equal(result.isValid(),false,'Check short string invalid');		
 	
 	result = Validator.validate("test");
-	ok(result.isValid(),'Check long string valid');		
+	equal(result.isValid(),true,'Check long string valid');		
 	
 	result = Validator.validate({});
 	// Behavior has changed, check existence with required
-	//ok(!result.isValid(),'Check object invalid');		
-	ok(result.isValid(),'Check object valid');		
+	//equal(result.isValid(),false,'Check object invalid');		
+	equal(result.isValid(),true,'Check object valid');		
 	
 	// Behavior has changed, check existence with required
 	result = Validator.validate([]);
-	//ok(!result.isValid(),'Check empty array invalid');		
-	ok(result.isValid(),'Check empty array valid');		
+	//equal(result.isValid(),false,'Check empty array invalid');		
+	equal(result.isValid(),true,'Check empty array valid');		
 	
 	result = Validator.validate([1,2]);
-	ok(result.isValid(),'Check filled array valid');		
+	equal(result.isValid(),true,'Check filled array valid');		
 				
 });
 
@@ -72,37 +72,37 @@ test("Check validator (max)", function( ) {
 	ok(Validator instanceof PropertyValidator, 'Check instance');
 	
 	result = Validator.validate(null);
-	ok(result.isValid(),'Check null valid');		
+	equal(result.isValid(),true,'Check null valid');		
 
 	result = Validator.validate(undefined);
-	ok(result.isValid(),'Check undefined valid');		
+	equal(result.isValid(),true,'Check undefined valid');		
 	
 	result = Validator.validate("");
-	ok(result.isValid(),'Check empty string valid');		
+	equal(result.isValid(),true,'Check empty string valid');		
 	
 	result = Validator.validate(0);
-	ok(result.isValid(),'Check 0 valid');		
+	equal(result.isValid(),true,'Check 0 valid');		
 	
 	result = Validator.validate(123);
-	ok(!result.isValid(),'Check 123 invalid');	
-	ok(result.getMessages().length===1,'Check messages length');		
-	ok(result.getMessages('value')[0].message==='tooLong','Check message name');
-	ok(result.getMessages('value')[0].attributes[0]===2,'Check message attribute');
+	equal(result.isValid(),false,'Check 123 invalid');	
+	equal(result.getMessages().length,1,'Check messages length');		
+	equal(result.getMessages('value')[0].message,'validation.error.stringTooLong','Check message name');
+	equal(result.getMessages('value')[0].attributes[0],2,'Check message attribute');
 	
 	result = Validator.validate("t");
-	ok(result.isValid(),'Check short string valid');		
+	equal(result.isValid(),true,'Check short string valid');		
 	
 	result = Validator.validate("test");
-	ok(!result.isValid(),'Check long string invalid');		
+	equal(result.isValid(),false,'Check long string invalid');		
 	
 	result = Validator.validate({});
-	ok(result.isValid(),'Check object valid');		
+	equal(result.isValid(),true,'Check object valid');		
 	
 	result = Validator.validate([]);
-	ok(result.isValid(),'Check empty array valid');		
+	equal(result.isValid(),true,'Check empty array valid');		
 	
 	result = Validator.validate([1,2,3]);
-	ok(!result.isValid(),'Check filled array invalid');		
+	equal(result.isValid(),false,'Check filled array invalid');		
 				
 });
 
@@ -115,48 +115,48 @@ test("Check validator (exact)", function( ) {
 	
 	result = Validator.validate(null);
 	// Behavior has changed, check existence with required
-	//ok(!result.isValid(),'Check null invalid');
-	ok(result.isValid(),'Check null valid');
+	//equal(result.isValid(),false,'Check null invalid');
+	equal(result.isValid(),true,'Check null valid');
 	
 	result = Validator.validate(undefined);
 	// Behavior has changed, check existence with required
-	//ok(!result.isValid(),'Check undefined invalid');		
-	ok(result.isValid(),'Check undefined valid');		
+	//equal(result.isValid(),false,'Check undefined invalid');		
+	equal(result.isValid(),true,'Check undefined valid');		
 
 	// Behavior has changed, check existence with required
 	result = Validator.validate("");
-	//ok(!result.isValid(),'Check empty string invalid');
-	ok(result.isValid(),'Check empty string valid');
+	//equal(result.isValid(),false,'Check empty string invalid');
+	equal(result.isValid(),true,'Check empty string valid');
 	
 	result = Validator.validate(0);
-	ok(!result.isValid(),'Check 0 invalid');		
-	ok(result.getMessages().length===1,'Check messages length');		
-	ok(result.getMessages('value')[0].message==='wrongLength','Check message name');
-	ok(result.getMessages('value')[0].attributes[0]===2,'Check message attribute');
+	equal(result.isValid(),false,'Check 0 invalid');		
+	equal(result.getMessages().length,1,'Check messages length');		
+	equal(result.getMessages('value')[0].message,'validation.error.stringWrongLength','Check message name');
+	equal(result.getMessages('value')[0].attributes[0],2,'Check message attribute');
 	
 	result = Validator.validate(12);
-	ok(result.isValid(),'Check 12 valid');		
+	equal(result.isValid(),true,'Check 12 valid');		
 	
 	result = Validator.validate("t");
-	ok(!result.isValid(),'Check short string invalid');		
+	equal(result.isValid(),false,'Check short string invalid');		
 	
 	result = Validator.validate("test");
-	ok(!result.isValid(),'Check long string invalid');		
+	equal(result.isValid(),false,'Check long string invalid');		
 	
 	result = Validator.validate("te");
-	ok(result.isValid(),'Check two char string valid');		
+	equal(result.isValid(),true,'Check two char string valid');		
 	
 	// Behavior has changed, check existence with required
 	result = Validator.validate({});
-	//ok(!result.isValid(),'Check object invalid');		
-	ok(result.isValid(),'Check object valid');		
+	//equal(result.isValid(),false,'Check object invalid');		
+	equal(result.isValid(),true,'Check object valid');		
 	
 	// Behavior has changed, check existence with required
 	result = Validator.validate([]);
-	//ok(!result.isValid(),'Check empty array invalid');		
-	ok(result.isValid(),'Check empty array valid');		
+	//equal(result.isValid(),false,'Check empty array invalid');		
+	equal(result.isValid(),true,'Check empty array valid');		
 	
 	result = Validator.validate([1,2]);
-	ok(result.isValid(),'Check filled array valid');		
+	equal(result.isValid(),true,'Check filled array valid');		
 				
 });

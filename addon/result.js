@@ -8,6 +8,8 @@ import Message from './message';
  * @class Result
  */
 export default Ember.Object.extend({
+	_debugLogging : false,
+	
 	/**
 	 * Result of the validation
 	 * 
@@ -111,11 +113,17 @@ export default Ember.Object.extend({
 			for(var path in this._validations) {
 				if(path.substr(0,context.path.length)===context.path) {
 					this._validations[path]=this.getErrorCount(path)===0;
+					if(this._debugLogging) {
+						this._logValidation(this._validations[path],path);
+					}
 				}
 			}
 			
 		}				
 		this._validations[context.path]=this.getErrorCount(context.path)===0;
+		if(this._debugLogging) {
+			this._logValidation(this._validations[context.path],context.path);
+		}
 	},
 	
 	setValidation:function(context,valid) {
@@ -284,5 +292,17 @@ export default Ember.Object.extend({
 			return 0;
 		}
 		return messages.length;
+	},
+	
+	_logValidation : function (valid,path) {
+		var symbol;
+		if (valid) {
+			symbol = '[✓]';
+		} else {
+			symbol = '[ ]';
+		}
+		Ember.Logger.info(symbol+" "+path);
 	}
+	
+	
 });

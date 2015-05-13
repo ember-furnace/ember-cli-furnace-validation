@@ -28,13 +28,13 @@ test("Single model", function( ) {
 	Validator=Model.validatorFor();
 	
 	Validator.validate(Model).then(function(result) {
-		ok(!result.isValid(),'Check invalid');
+		equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Model.set('lastName','Anderson');
 	
 	Validator.validate(Model).then(function(result) {
-		ok(result.isValid(),'Check valid');
+		equal(result.isValid(),true,'Check valid');
 	}); 
 });
 
@@ -53,13 +53,13 @@ test("Nested models", function( ) {
 	Validator=Model.validatorFor();
 	
 	Validator.validate(Model).then(function(result) {
-		ok(!result.isValid(),'Check invalid');
+		equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Model2.set('city','Addison');
 	
 	Validator.validate(Model).then(function(result) {
-		ok(result.isValid(),'Check valid');
+		equal(result.isValid(),true,'Check valid');
 	});
 });
 
@@ -80,13 +80,13 @@ test("Nested models with circular reference", function( ) {
 	Validator=Model.validatorFor();
 	
 	Validator.validate(Model).then(function(result) {
-		ok(!result.isValid(),'Check invalid');
+		equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Model2.set('lastName','Brooks');
 	
 	Validator.validate(Model).then(function(result) {
-		ok(result.isValid(),'Check valid');
+		equal(result.isValid(),true,'Check valid');
 	});
 });
 
@@ -104,7 +104,7 @@ test("Nested models in a list", function( ) {
 	Validator=Model.validatorFor();
 
 	Validator.validate(Model).then(function(result) {
-		ok(!result.isValid(),'Check invalid');
+		equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Ember.run(function() {
@@ -112,7 +112,7 @@ test("Nested models in a list", function( ) {
 	});
 	
 	Validator.validate(Model).then(function(result) {
-		ok(result.isValid(),'Check valid');
+		equal(result.isValid(),true,'Check valid');
 	});
 	
 });
@@ -133,7 +133,7 @@ test("Nested models in a list with circular reference", function( ) {
 	Validator=Model.validatorFor();
 	
 	Validator.validate(Model).then(function(result) {
-		ok(!result.isValid(),'Check invalid');
+		equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Ember.run(function() {
@@ -141,7 +141,7 @@ test("Nested models in a list with circular reference", function( ) {
 	});
 	
 	Validator.validate(Model).then(function(result) {
-		ok(result.isValid(),'Check valid');
+		equal(result.isValid(),true,'Check valid');
 	}); 
 	
 

@@ -5,9 +5,12 @@ var nestContext= function(key,value) {
 	if(!(this.value instanceof Ember.Object)) {
 		return null;
 	}				
-
+	value=value || this.value.get(key);
+	if(Ember.PromiseProxyMixin.detect(value)) {
+		value=value.content;
+	} 
 	var nestedContext= {
-		value:value || this.value.get(key),
+		value:value ,
 		key: key ,
 		name : this.key+"."+key,
 		path : this.path+"."+key,
@@ -24,6 +27,9 @@ var nestContext= function(key,value) {
 };
 
 var createContext  = function(value,key,result) {
+	if(Ember.PromiseProxyMixin.detect(value)) {
+		value=value.content;
+	}
 	return {
 		value:value,			
 		key: key || (value instanceof Ember.Object ? 'object' : 'value'),
