@@ -84,6 +84,9 @@ var Observer = Ember.Object.extend({
 	
 	_detach:function() {
 		this._target.removeObserver(this._key,this,this._fn);
+		if(Ember.Array.detect(this._getValue())) {
+			this._getValue().removeArrayObserver(this);
+		}
 		this._detachKeys();
 	},
 	
@@ -100,6 +103,9 @@ var Observer = Ember.Object.extend({
 			this._logEvent('Observing',this._target.toString(),this._key);
 		}
 		this._target.addObserver(this._key,this,this._fn);
+		if(Ember.Array.detect(this._getValue())) {
+			this._getValue().addArrayObserver(this);
+		}
 		this._attachKeys();
 	},
 	
@@ -110,7 +116,14 @@ var Observer = Ember.Object.extend({
 			}
 		}
 	},
-
+	
+	arrayWillChange: function(arr) {
+	},
+	
+	arrayDidChange: function(arr) {
+		this._fnOnce(arr,this._key);
+	},
+	
 	_observeKey: function(key) {
 		this._keys.push(key);
 		if(Ember.Observable.detect(this._getValue())) {
@@ -179,7 +192,7 @@ var Observer = Ember.Object.extend({
 				}
 				this._children.pushObject(observer);
 			}
-		} 
+		}
 	
 			
 	},
@@ -219,8 +232,7 @@ var Observer = Ember.Object.extend({
 		return this._context.result;
 	},
 	
-	_fnOnce : function(sender, key, value, rev) {
-		
+	_fnOnce : function(sender, key, value, rev) {		
 		if(key===this._key) {
 			if(this._getValue()===this._orgValue && !Ember.MutableArray.detect(this._getValue())) {
 				if(this._debugLogging) {
