@@ -58,7 +58,10 @@ var getName=function(container,object) {
 		var index=tmpName.indexOf(':');
 		objectName=tmpName.substring(index+1,tmpName.indexOf(':',index+1)).replace(/\//g,'.');	
 	} else if(object instanceof Ember.Object) {
-		objectName=object.constructor.typeKey;
+		if(object.constructor.modelName!==undefined)
+			objectName=object.constructor.modelName;
+		else
+			objectName=object.constructor.typeKey;
 	} else {
 		Ember.assert('Can not determine validator for type '+(typeof object));
 	}
