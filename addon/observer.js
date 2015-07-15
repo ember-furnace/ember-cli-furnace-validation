@@ -84,8 +84,8 @@ var Observer = Ember.Object.extend({
 	
 	_detach:function() {
 		this._target.removeObserver(this._key,this,this._fn);
-		if(Ember.Array.detect(this._getValue())) {
-			this._getValue().removeArrayObserver(this);
+		if(Ember.Array.detect(this._orgValue)) {
+			this._orgValue.removeArrayObserver(this);
 		}
 		this._detachKeys();
 	},
