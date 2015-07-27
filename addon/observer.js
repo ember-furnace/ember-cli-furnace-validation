@@ -3,6 +3,8 @@ import createContext from './utils/context';
 import Result from './result';
 import Queue from './observer-queue';
 
+var EachProxy = Ember.__loader.require('ember-runtime/system/each_proxy')['EachProxy'];
+
 /**
  * Observer for automatic object validation
  * 
@@ -141,7 +143,7 @@ var Observer = Ember.Object.extend({
 		var observer=null;
 		
 		var value=this._getValue();
-		if(value instanceof Ember.EachProxy) {
+		if(value instanceof EachProxy) {
 			value=value.get('_content');
 			var _self=this;
 			value.forEach(function(item,index) {
