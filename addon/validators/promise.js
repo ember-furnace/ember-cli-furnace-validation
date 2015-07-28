@@ -9,19 +9,21 @@ import Ember from 'ember';
  * @class Promise
  */
 export default Abstract.extend({
-	_validate : function(context) {
+	_validate : function(context,paths) {
 		var validator=this;
-		context.result._valCountIncrease();
-		return new Ember.RSVP.Promise(function(resolve,reject) {
-			try{
-				validator.call(context,context.value,context.result);
-				resolve(context.result);
-			}
-			catch(e) {
-				reject(e);
-			}
-		},validator.constructor.toString()+" Validating "+context.path).finally(function(){
-			context.result._valCountDecrease();
-		});	
+		if(!paths || paths.indexOf(context.path)>-1) {
+			context.result._valCountIncrease();
+			return new Ember.RSVP.Promise(function(resolve,reject) {
+				try{
+					validator.call(context,context.value,context.result);
+					resolve(context.result);
+				}
+				catch(e) {
+					reject(e);
+				}
+			},validator.constructor.toString()+" Validating "+context.path).finally(function(){
+				context.result._valCountDecrease();
+			});	
+		}
 	}
 });

@@ -108,10 +108,10 @@ export default Ember.Object.extend({
 		this.set('_validations', {});
 	},
 	
-	updateValidity: function(context,deep) {
+	updateValidity: function(context,deep,paths) {
 		if(deep) {
 			for(var path in this._validations) {
-				if(path.substr(0,context.path.length)===context.path) {
+				if(path.substr(0,context.path.length)===context.path && (!paths || paths.indexOf(path)>-1)) {
 					this._validations[path]=this.getErrorCount(path)===0;
 					if(this._debugLogging) {
 						this._logValidation(this._validations[path],path);
@@ -119,8 +119,10 @@ export default Ember.Object.extend({
 				}
 			}
 			
-		}				
-		this._validations[context.path]=this.getErrorCount(context.path)===0;
+		}		
+		if(!paths || paths.indexOf(context.path)>-1) {
+			this._validations[context.path]=this.getErrorCount(context.path)===0;
+		}
 		if(this._debugLogging) {
 			this._logValidation(this._validations[context.path],context.path);
 		}

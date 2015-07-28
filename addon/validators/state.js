@@ -1,6 +1,7 @@
 import Promise from './promise';
+import Abstract from './abstract';
 import Ember from 'ember';
-
+import Proxy from 'furnace-validation/mixin/proxy';
 /**
  * State validator
  * 
@@ -25,6 +26,22 @@ var State= Promise.extend({
 		});
 		return ret;
 	}).readOnly(),
+	
+//	unknownProperty : function(key) {
+//		var validators=this.get('validators');
+//		var ret = Ember.A();
+//		for(var propertyName in validators) {			
+//			var validator=validators[propertyName].get(key);
+//			if(validator instanceof Abstract) {
+//				ret.pushObject(validator);
+//			}
+//		}
+//		if(ret.length) {
+//			ret= Ember.Object.extend(Proxy).create({_validators:ret});
+//			return ret;
+//		}		
+//		return undefined;
+//	},
 	
 	init: function() {
 		this._super();	
@@ -51,14 +68,14 @@ var State= Promise.extend({
 		return this._stateDeps.split(',');
 	},
 	
-	_validate: function(context) {		
+	_validate: function(context,paths) {		
 		var promises=Ember.A();
 		Ember.assert('The state validator can\'t validate enumerables',!Ember.Enumerable.detect(context.value));
 		var validators=this.get('validators');
 		var states=this._getStates(context);
 		for(var propertyName in validators) {			
 			if(states.indexOf(propertyName)>-1) {
-				promises.pushObject(validators[propertyName]._validate(context));
+				promises.pushObject(validators[propertyName]._validate(context,paths));
 			}
 		}
 		Ember.warn('State validator ran without a validatable state, the result might remain invalid if no other validations were ran!',promises.length!==0);

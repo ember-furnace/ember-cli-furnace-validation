@@ -24,17 +24,17 @@ export default Ember.Object.extend({
 	 * @param result (optional) {Furnace.Validation.Result} Instance of a result object 
 	 * @return {Furnace.Validation.Result|Ember.RSVP.Promise} Returns validation result object or promise
 	 */
-	validate : function(value,key,result) {
+	validate : function(value,key,result,paths) {
 		Ember.assert('Result to append to should be an instance of Result',!result || (result instanceof Result));
 		var context=createContext(value,key,result);
-		var validation = this._validate(context);
+		var validation = this._validate(context,paths);
 		if(validation instanceof Ember.RSVP.Promise) {
 			return validation.then(function(result){
-				result.updateValidity(context,true);
+				result.updateValidity(context,true,paths);
 				return result;
 			});
 		}
-		context.result.updateValidity(context,true);
+		context.result.updateValidity(context,true,paths);
 		return context.result;
 	},
 		
@@ -46,13 +46,15 @@ export default Ember.Object.extend({
 	 * @param context {Object} Validation context
 	 * @return {Furnace.Validation.Result|Ember.RSVP.Promise} Returns validation result object or promise
 	 */
-	_validate : function(context) {
-		context.result._valCountIncrease();
-		if(this._debugLogging) {
-			this._logEvent('Validating',context.path);
+	_validate : function(context,paths) {
+		if(!paths || paths.indexOf(context.path)>-1) {
+			context.result._valCountIncrease();
+			if(this._debugLogging) {
+				this._logEvent('Validating',context.path);
+			}
+			this.call(context,context.value,context.result);
+			context.result._valCountDecrease();
 		}
-		this.call(context,context.value,context.result);
-		context.result._valCountDecrease();
 		return context.result;
 	},
 	

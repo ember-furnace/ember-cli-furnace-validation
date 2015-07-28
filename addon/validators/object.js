@@ -56,7 +56,7 @@ export default Promise.extend({
 		//this.get('validators');
 	},
 	
-	_validate: function(context) {		
+	_validate: function(context,paths) {		
 		var promises=Ember.A();
 		Ember.assert('The object validator can\'t validate enumerables',!Ember.Enumerable.detect(context.value));
 		
@@ -72,11 +72,13 @@ export default Promise.extend({
 			for(var propertyName in validators) {
 				var nestedContext=context.nest(propertyName);
 				if(nestedContext) {
-					context.result.setValidation(nestedContext);
+					if(!paths || paths.indexOf(nestedContext.path)>-1) {
+						context.result.setValidation(nestedContext,paths);
+					}
 					promises.pushObject(validators[propertyName]._validate(nestedContext));
 				}
 			}
-			promises.pushObject(this._super(context));
+			promises.pushObject(this._super(context,paths));
 		}
 		
 		var validator=this;

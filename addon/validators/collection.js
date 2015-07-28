@@ -2,6 +2,8 @@ import Ember from 'ember';
 import Promise from './promise';
 import Validation from '../index';
 import getOptions from '../utils/get-options';
+import Abstract from './abstract';
+import Proxy from 'furnace-validation/mixin/proxy';
 /**
  * Collection of validators, wrapping different validators into one promise
  * 
@@ -51,14 +53,38 @@ export default Promise.extend({
 	 * @param validator {Abstract} validator to add
 	 */
 	push : function(validator) {
-		this._validatorArray.push(validator);
+		this._validatorArray.pushObject(validator);
+	},
+	
+	pushObject : function(validator) {
+		this._validatorArray.pushObject(validator);
+	},
+	
+//	unknownProperty: function(key) {
+//		var validators=this.get('validators');
+//		var ret = Ember.A();
+//		validators.forEach(function(validator) {
+//			var validator=validator.get(key);
+//			if(validator instanceof Abstract) {
+//				ret.pushObject(validator);
+//			}
+//		});
+//		if(ret.length) {
+//			ret= Ember.Object.extend(Proxy).create({_validators:ret});
+//			return ret;
+//		}		
+//		return undefined;
+//	},
+	
+	getLength : function() {
+		return this._validatorArray.length;
 	},
 
-	_validate : function(context) {
+	_validate : function(context,paths) {
 		var validator=this;
 		context.result._valCountIncrease();
 		var promises=Ember.A();
-		promises.pushObjects(this.get('validators').invoke('_validate',context));
+		promises.pushObjects(this.get('validators').invoke('_validate',context,paths));
 		
 		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function(values) {
 			return context.result;
