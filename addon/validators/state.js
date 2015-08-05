@@ -1,7 +1,6 @@
 import Promise from './promise';
 import Abstract from './abstract';
 import Ember from 'ember';
-import Proxy from 'furnace-validation/mixin/proxy';
 /**
  * State validator
  * 

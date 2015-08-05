@@ -3,7 +3,6 @@ import Promise from './promise';
 import Validation from '../index';
 import getOptions from '../utils/get-options';
 import Abstract from './abstract';
-import Proxy from 'furnace-validation/mixin/proxy';
 /**
  * Collection of validators, wrapping different validators into one promise
  * 
