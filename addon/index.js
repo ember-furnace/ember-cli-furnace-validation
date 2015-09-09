@@ -188,6 +188,13 @@ export default {
 		validators=getOptions(validators,options);
 		
 		var meta = getMeta(validators);
-		return getComputed().meta(meta).readOnly();
+		var computed = getComputed().meta(meta).readOnly();
+		computed.on=function() {
+			for(var validator in this._meta.validators) {					
+				this._meta.validators[validator]._depKeys=arguments[0];				
+			}
+			return this;
+		};
+		return computed;
 	}
 };

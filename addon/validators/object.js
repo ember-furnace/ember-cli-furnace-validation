@@ -9,7 +9,7 @@ import Ember from 'ember';
  * @class Object
  * @extends Furnace.Validation.Promise
  */
-export default Promise.extend({
+var Object = Promise.extend({
 	
 	/**
 	 * Validator instances
@@ -25,6 +25,8 @@ export default Promise.extend({
 	 * @default null 
 	 */
 	typeCheck : null,
+	
+	_depKeys : null,
 	
 	/**
 	 * Validators for properties
@@ -94,12 +96,23 @@ export default Promise.extend({
 		return this.get('validators.'+propertyName).invoke('_validate',context);
 	},
 	
+	_getDeps:function() {
+		if(!this._depKeys) {
+			return [];
+		}
+		return this._depKeys.split(',');
+	},
 		
 	_observe : function(observer) {
 		this._super(observer);
 		var validators=this.get('validators');
 		for(var propertyName in validators) {
 			observer._observe(propertyName,validators[propertyName]);
+		}
+		
+		var deps=this._getDeps();
+		for(var i=0;i<deps.length;i++) {			
+			observer._observeKey(deps[i]);			
 		}
 	},
 	
@@ -114,3 +127,16 @@ export default Promise.extend({
 	},
 
 });
+
+Object.reopenClass({
+	on : function() {
+		if(arguments.length===1) {						
+			this.reopen({				
+				_depKeys: arguments[0]
+			});
+		}		
+		return this;
+	}
+});
+
+export default Object;
