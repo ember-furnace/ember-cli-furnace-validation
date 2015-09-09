@@ -16,7 +16,7 @@ export default Validator.extend({
 	range : null,
 	
 	call : function(context,value,result) {
-		if(!Ember.isBlank(value) && !value===false) {
+		if(!Ember.isBlank(value) && value!==false) {
 			if(value==='-') {
 				result.addError(context,this.messages.isNaN,null,'delayed');
 			} else if(isNaN(value)) {
