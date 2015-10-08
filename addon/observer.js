@@ -282,7 +282,7 @@ var Observer = Ember.Object.extend({
 		if(this._debugLogging) {
 			this._logEvent('Observed change',sender.toString(),key);
 		}
-		Ember.run.once(this,this._fnOnce,sender, key, value, rev);
+		Ember.run.scheduleOnce('sync',this,this._fnOnce,sender, key, value, rev);
 	},	
 	
 	_logEvent : function() {
