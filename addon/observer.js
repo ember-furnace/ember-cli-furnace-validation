@@ -236,12 +236,6 @@ var Observer = Ember.Object.extend({
 	
 	_fnOnce : function(sender, key, value, rev) {		
 		if(key===this._key) {
-			if(this._getValue()===this._orgValue && !Ember.MutableArray.detect(this._getValue())) {
-				if(this._debugLogging) {
-					this._logEvent('No change detected',sender.toString(),key);
-				}
-				return;
-			}
 			if(this._debugLogging) {
 				this._logEvent('Handeling change',sender.toString(),key);
 			}
@@ -259,12 +253,6 @@ var Observer = Ember.Object.extend({
 			
 		}	
 		
-		if(this._children) {
-			this._children.forEach(function(child) {
-				child.destroy();
-			});
-			this._children.clear();
-		}
 
 		this._queue.push(this._validator,this._context,sender);
 		this._queue.run();
@@ -281,6 +269,20 @@ var Observer = Ember.Object.extend({
 		// We need to run this later because of delay in ember-data relationship availablility. Better run it once as well.
 		if(this._debugLogging) {
 			this._logEvent('Observed change',sender.toString(),key);
+		}
+		if(key===this._key) {
+			if(this._getValue()===this._orgValue && !Ember.MutableArray.detect(this._getValue())) {
+				if(this._debugLogging) {
+					this._logEvent('No change detected',sender.toString(),key);
+				}
+				return;
+			}
+			if(this._children) {
+				this._children.forEach(function(child) {
+					child.destroy();
+				});
+				this._children.clear();
+			}
 		}
 		Ember.run.scheduleOnce('sync',this,this._fnOnce,sender, key, value, rev);
 	},	
