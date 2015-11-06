@@ -18,11 +18,15 @@ export default Ember.Object.extend({
 	push: function(validator,context,sender) {
 		this.length++;
 		var skip=false;
-		this._queue.forEach(function(queued) {
+		this._queue.forEach(function(queued,index) {
 			if(queued.validator===validator && queued.context.path===context.path) {
 				if(this._debugLogging) {
 					this._logEvent(this+': Skipping',validator.toString(),context.path);
-				}	
+				}					
+				if(index===0) {
+					this.length++;
+					this._queue.push(queued);
+				}
 				skip=true;
 				return;
 			}
