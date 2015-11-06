@@ -2,6 +2,7 @@ import Ember from 'ember';
 import createContext from './utils/context';
 import Result from './result';
 import Queue from './observer-queue';
+import State from './validators/state';
 
 var EachProxy = Ember.__loader.require('ember-runtime/system/each_proxy')['EachProxy'];
 
@@ -283,7 +284,15 @@ var Observer = Ember.Object.extend({
 				});
 				this._children.clear();
 			}
+		} else if(this._validator instanceof State) {			
+			if(this._children) {
+				this._children.forEach(function(child) {
+					child.destroy();
+				});
+				this._children.clear();
+			}
 		}
+		
 		Ember.run.scheduleOnce('sync',this,this._fnOnce,sender, key, value, rev);
 	},	
 	
