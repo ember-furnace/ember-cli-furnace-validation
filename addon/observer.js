@@ -4,7 +4,7 @@ import Result from './result';
 import Queue from './observer-queue';
 import State from './validators/state';
 
-var EachProxy = Ember.__loader.require('ember-runtime/system/each_proxy')['EachProxy'];
+var EachProxy = Ember.__loader.require('ember-runtime/system/each_proxy')['EachProxy'] || Ember.__loader.require('ember-runtime/system/each_proxy').default;
 
 /**
  * Observer for automatic object validation

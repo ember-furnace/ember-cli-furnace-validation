@@ -77,7 +77,7 @@ var State= Promise.extend({
 				promises.pushObject(validators[propertyName]._validate(context,paths));
 			}
 		}
-		Ember.warn('State validator ran without a validatable state, the result might remain invalid if no other validations were ran!',promises.length!==0);
+		Ember.warn('State validator ran without a validatable state, the result might remain invalid if no other validations were ran!',promises.length!==0,{id:'furnace-validation:validator.state.no-state'});
 		var validator=this;
 		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function(values) {
 			return context.result;

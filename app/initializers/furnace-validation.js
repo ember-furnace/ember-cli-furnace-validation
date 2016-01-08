@@ -4,7 +4,7 @@ import ObserverQueue from 'furnace-validation/observer-queue';
 import Validator from 'furnace-validation/validators/abstract';
 import Result from 'furnace-validation/result';
 
-export function initialize(container, application) {
+export function initialize( application) {
 	application.register('validator:lookup',Lookup, {instantiate:false});
 	application.inject('route','validatorFor','validator:lookup');
 	application.inject('model','validatorFor','validator:lookup');
