@@ -145,7 +145,7 @@ var Observer = Ember.Object.extend({
 		
 		var value=this._getValue();
 		if(value instanceof EachProxy) {
-			value=value.get('_content');
+			value=Ember.get(value,'_content');
 			var _self=this;
 			value.forEach(function(item,index) {
 				var newChain=_self._chain.copy();
