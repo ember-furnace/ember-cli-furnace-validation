@@ -129,8 +129,9 @@ export default Ember.Object.extend({
 	},
 	
 	setValidation:function(context,valid) {
-		if(valid===undefined)
+		if(valid===undefined) {
 			valid=false;
+		}
 		this._validations[context.path]=valid;
 	},
 	

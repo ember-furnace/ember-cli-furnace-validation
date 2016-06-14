@@ -1,8 +1,6 @@
 import Ember from 'ember';
 import Promise from './promise';
-import Validation from '../index';
 import getOptions from '../utils/get-options';
-import Abstract from './abstract';
 /**
  * Collection of validators, wrapping different validators into one promise
  * 
@@ -85,7 +83,7 @@ export default Promise.extend({
 		var promises=Ember.A();
 		promises.pushObjects(this.get('validators').invoke('_validate',context,paths));
 		
-		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function(values) {
+		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function() {
 			return context.result;
 		},function(e) {
 			return e;
@@ -97,7 +95,6 @@ export default Promise.extend({
 	
 	_observe : function(observer) {
 		this._super(observer);
-		var parent=this;
 		this.get('validators').forEach(function(validator) {
 			validator._observe(observer);
 		});

@@ -120,7 +120,7 @@ var Observer = Ember.Object.extend({
 		}
 	},
 	
-	arrayWillChange: function(arr) {
+	arrayWillChange: function() {
 	},
 	
 	arrayDidChange: function(arr) {
@@ -235,7 +235,7 @@ var Observer = Ember.Object.extend({
 		return this._context.result;
 	},
 	
-	_fnOnce : function(sender, key, value, rev) {		
+	_fnOnce : function(sender, key) {		
 		if(key===this._key) {
 			if(this._debugLogging) {
 				this._logEvent('Handeling change',sender.toString(),key);

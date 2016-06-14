@@ -58,10 +58,11 @@ var getName=function(container,object) {
 		var index=tmpName.indexOf(':');
 		objectName=tmpName.substring(index+1,tmpName.indexOf(':',index+1)).replace(/\//g,'.');	
 	} else if(object instanceof Ember.Object) {
-		if(object.constructor.modelName!==undefined)
+		if(object.constructor.modelName!==undefined) {
 			objectName=object.constructor.modelName;
-		else
+		} else {
 			objectName=object.constructor.typeKey;
+		}
 	} else {
 		Ember.assert('Can not determine validator for type '+(typeof object));
 	}
@@ -73,8 +74,9 @@ var getName=function(container,object) {
 };
 
 export default function(object,options) {
-	if(object===undefined)
+	if(object===undefined) {
 		object=this;
+	}
 	var container=this.get('container');
 	var name=getName(container,object);
 	return getInstance(container,name,options);

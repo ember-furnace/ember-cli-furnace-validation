@@ -36,7 +36,7 @@ export default Promise.extend({
 				}
 			});
 		} 
-		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function(values) {
+		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function() {
 			return context.result;
 		},function(e) {
 			return e;

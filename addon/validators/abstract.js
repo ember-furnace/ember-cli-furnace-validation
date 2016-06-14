@@ -67,7 +67,7 @@ export default Ember.Object.extend({
 	 * @param value {Mixed} Validation context
 	 * @param result {Furnace.Validation.Result} Validation result object instance
 	 */
-	call : function(context,value,result) {
+	call : function() {
 		Ember.assert("Did you forget to override the 'call' method in your validator? ("+this.toString()+")");
 	},
 	
@@ -94,7 +94,14 @@ export default Ember.Object.extend({
 		
 	},
 	
-	_observe : function(observer) {
+	/**
+	 * Observe object to automatically validate a object on (value) changes 
+	 * 
+	 * @method _observe
+	 * @private
+	 * @param observer {Furnace.Validation.Observer} Observer
+	 */
+	_observe : function() {
 		
 	},
 	

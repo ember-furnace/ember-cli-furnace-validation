@@ -1,5 +1,4 @@
 import Collection from './collection';
-import Ember from 'ember';
 
 /**
  * Enumerable validator

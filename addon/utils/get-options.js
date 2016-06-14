@@ -8,8 +8,9 @@ export default function getOptions(validators,options) {
 	if(typeof validators === 'string') {
 		var name=validators;
 		validators={};
-		if(!options)
+		if(!options) {
 			options=true;
+		}
 		validators[name]=options;
 	}
 	else {

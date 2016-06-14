@@ -8,7 +8,6 @@ import ObjectValidator from '../validators/object';
 import StateValidator from '../validators/state';
 import PropertyValidator from '../validators/property';
 import CollectionValidator from '../validators/collection';
-import EnumValidator from '../validators/enum';
 import EnumItemValidator from '../validators/enum-item';
 
 function getValidator(validator,options) {	

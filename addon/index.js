@@ -6,13 +6,12 @@
  * @static
  */
 
-import ObjectValidator from './validators/object';
-import StateValidator from './validators/state';
-import PropertyValidator from './validators/property';
 import PromiseValidator from './validators/promise';
+import PropertyValidator from './validators/property';
+import StateValidator from './validators/state';
+import ObjectValidator from './validators/object';
 import CollectionValidator from './validators/collection';
 import EnumValidator from './validators/enum';
-import EnumItemValidator from './validators/enum-item';
 import Ember from 'ember';
 
 import getOptions from './utils/get-options';
@@ -35,7 +34,7 @@ var getMeta=function(validators,collection) {
  * Get computed properties
  * @private
  */
-var getComputed=function(enumerable) {
+var getComputed=function() {
 	return Ember.computed(function(key) {
 		Ember.assert("You have an assigned attribute validation to something thats not an ObjectValidator",(this instanceof ObjectValidator || this instanceof StateValidator));
 		

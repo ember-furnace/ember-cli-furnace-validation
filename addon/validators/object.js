@@ -1,5 +1,4 @@
 import Promise from './promise';
-import Abstract from './abstract';
 import Ember from 'ember';
 
 /**
@@ -9,7 +8,7 @@ import Ember from 'ember';
  * @class Object
  * @extends Furnace.Validation.Promise
  */
-var Object = Promise.extend({
+export default Promise.extend({
 	
 	/**
 	 * Validator instances
@@ -84,7 +83,7 @@ var Object = Promise.extend({
 		}
 		
 		var validator=this;
-		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function(values) {
+		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function() {
 			return context.result;
 		},function(e) {
 			return e;
@@ -126,9 +125,7 @@ var Object = Promise.extend({
 		}
 	},
 
-});
-
-Object.reopenClass({
+}).reopenClass({
 	on : function() {
 		if(arguments.length===1) {						
 			this.reopen({				
@@ -138,5 +135,3 @@ Object.reopenClass({
 		return this;
 	}
 });
-
-export default Object;
