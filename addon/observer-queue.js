@@ -59,8 +59,12 @@ export default Ember.Object.extend({
 			next.context.result.reset(next.context,true);
 			next.context.resetStack();
 			next.validator._validate(next.context).then(function(result){
-				queue._queue.shift();
 				result.updateValidity(next.context,true);
+			}).catch(function(e) {
+				Ember.Logger.error('Exception during validation: '+e);
+				return next.context.result;
+			}).finally(function() {
+				queue._queue.shift();
 				queue.length--;
 				queue._running=false;
 				if(queue.length) {
@@ -72,7 +76,7 @@ export default Ember.Object.extend({
 					if(queue._debugLogging) {
 						queue._logEvent(queue+': Queue clear, running callback',next.sender.toString(),next.context.path);
 					}
-					queue.callback(result,next.sender,next.context.key);
+					queue.callback(next.context.result,next.sender,next.context.key);
 				}
 			});
 		}

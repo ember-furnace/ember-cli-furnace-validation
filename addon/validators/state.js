@@ -81,7 +81,9 @@ var State= Promise.extend({
 		return Ember.RSVP.all(promises,validator.constructor.toString()+" All validations for "+context.path).then(function() {
 			return context.result;
 		},function(e) {
-			return e;
+			Ember.Logger.error('Exception during validation in '+validator.constructor.toString()+': '+e);
+			context.result.addError(context,'validation.error.exception');
+			return context.result;
 		},validator.constructor.toString()+" Validations resolved");		
 	},
 	

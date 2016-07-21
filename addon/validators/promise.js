@@ -13,10 +13,19 @@ export default Abstract.extend({
 		var validator=this;
 		if(!paths || paths.indexOf(context.path)>-1) {
 			context.result._valCountIncrease();
+			if(this._debugLogging) {
+				this._logEvent('Validating',context.path);
+			}
 			return new Ember.RSVP.Promise(function(resolve,reject) {
 				try{
-					validator.call(context,context.value,context.result);
-					resolve(context.result);
+					var ret = validator.call(context,context.value,context.result);
+					if(ret instanceof Ember.RSVP.Promise) {
+						ret.then(function() {
+							resolve(context.result);
+						}).catch(reject);
+					} else {
+						resolve(context.result);
+					}
 				}
 				catch(e) {
 					reject(e);
@@ -24,6 +33,6 @@ export default Abstract.extend({
 			},validator.constructor.toString()+" Validating "+context.path).finally(function(){
 				context.result._valCountDecrease();
 			});	
-		}
+		} 
 	}
 });
