@@ -22,6 +22,8 @@ export default Validator.extend({
 		objectLength : 'objectLength',
 	},
 	
+	lengthNotice: true,
+	
 	call : function(context,value,result) {		
 		switch(typeof value) {
 		
@@ -61,7 +63,7 @@ export default Validator.extend({
 		if(this.get('max')!==false) {
 			if(length>this.max) {
 				result.addError(context,this.messages.stringTooLong,[this.get('max'),length,length-this.get('max')]);
-			} else if(length> this.max-this.max/5) {
+			} else if(this.lengthNotice && length> this.max-this.max/5) {
 				result.addNotice(context,this.messages.stringLength,[this.get('max'),length,this.get('max')-length],'focus');
 			}
 		}
@@ -86,7 +88,7 @@ export default Validator.extend({
 		if(this.get('max')!==false) {
 			if(length>this.max) {
 				result.addError(context,this.messages.objectTooLong,[this.get('max'),length,length-this.get('max')]);
-			} else if(length> this.max-this.max/5) {
+			} else if(this.lengthNotice && length> this.max-this.max/5) {
 				result.addNotice(context,this.messages.objectLength,[this.get('max'),length,this.get('max')-length],'focus');
 			}
 		}
