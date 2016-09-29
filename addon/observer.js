@@ -33,8 +33,8 @@ var Observer = Ember.Object.extend({
 	_chain : null,
 	
 	_getValue : function() {		
-		Ember.assert('Validation observer received an unobservable object',Ember.Observable.detect(this._target));
-		var value = Ember.get(this._target,this._key);
+		Ember.assert('Validation observer received an unobservable object',Ember.Observable.detect(this._target));		
+		var value = this._key ? Ember.get(this._target,this._key) : this._target;
 		if(Ember.PromiseProxyMixin.detect(value)) {
 			value=value.content;
 		} 
@@ -105,7 +105,9 @@ var Observer = Ember.Object.extend({
 		if(this._debugLogging) {
 			this._logEvent('Observing',this._target.toString(),this._key);
 		}
-		this._target.addObserver(this._key,this,this._fn);
+		if(this._key) {
+			this._target.addObserver(this._key,this,this._fn);
+		}
 		if(Ember.Array.detect(this._getValue())) {
 			this._getValue().addArrayObserver(this);
 		}
