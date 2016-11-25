@@ -149,10 +149,12 @@ var Observer = Ember.Object.extend({
 			var _self=this;
 			value.forEach(function(item,index) {
 				var newChain=_self._chain.copy();
+				
+				// FIXME: Adding index tot key here in invalid, passing a NULL key gives also errors
 				observer=Observer.create({					
 					_validator : validator,
 					_target : item,
-					_key : key,
+					_key : key+'.'+index,
 					_callback : _self._callback,
 					_queue : _self._queue,
 					_context : _self._context.nest(index,item),
