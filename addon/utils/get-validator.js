@@ -3,7 +3,7 @@
  * @namespace Furnace.Validation
  * @private
  */
-
+import Ember from 'ember';
 import ObjectValidator from '../validators/object';
 import StateValidator from '../validators/state';
 import PropertyValidator from '../validators/property';
@@ -19,21 +19,22 @@ function getValidator(validator,options) {
 		}						
 	}
 	var _validator;
+	var owner=Ember.getOwner(this);
 	switch(validator) { 
 		case 'enum':
-			_validator=EnumItemValidator.create({_validators : options,container: this.container});
+			_validator=EnumItemValidator.create(owner.ownerInjection(),{_validators : options});
 			break;
 		case 'state':
-			_validator=StateValidator.extend(options).create({container: this.container});
+			_validator=StateValidator.extend(options).create(owner.ownerInjection());
 			break;
 		case 'object':
-			_validator=ObjectValidator.extend(options).create({container: this.container});
+			_validator=ObjectValidator.extend(options).create(owner.ownerInjection());
 			break;
 		case 'collection':
-			_validator=CollectionValidator.extend().val(options).create({container: this.container});
+			_validator=CollectionValidator.extend().val(options).create(owner.ownerInjection());
 			break;
 		case 'property':
-			_validator=PropertyValidator.extend(options).create({container: this.container});
+			_validator=PropertyValidator.extend(options).create(owner.ownerInjection());
 			break;
 		default:
 			_validator=this.validatorFor(validator,options);
