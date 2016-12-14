@@ -33,7 +33,7 @@ var Observer = Ember.Object.extend({
 	_chain : null,
 	
 	_getValue : function() {		
-		Ember.assert('Validation observer received an unobservable object',Ember.Observable.detect(this._target));		
+		Ember.warn('Validation observer received an unobservable object '+this._target+':'+this._key,Ember.Observable.detect(this._target),{id:'furnace-validation:observer-target-not-observable'});		
 		var value = this._key ? Ember.get(this._target,this._key) : this._target;
 		if(Ember.PromiseProxyMixin.detect(value)) {
 			value=value.content;
@@ -85,8 +85,8 @@ var Observer = Ember.Object.extend({
 		
 	},
 	
-	_detach:function() {
-		this._target.removeObserver(this._key,this,this._fn);
+	_detach:function() {		
+		Ember.removeObserver(this._target,this._key,this,this._fn);
 		if(Ember.Array.detect(this._orgValue)) {
 			this._orgValue.removeArrayObserver(this);
 		}
@@ -94,11 +94,11 @@ var Observer = Ember.Object.extend({
 	},
 	
 	_detachKeys:function() {
-		if(Ember.Observable.detect(this._orgValue)) {
+//		if(Ember.Observable.detect(this._orgValue)) {
 			for(var i=0;i<this._keys.length;i++) {
-				this._orgValue.removeObserver(this._keys[i],this,this._fn);
+				Ember.removeObserver(this._orgValue,this._keys[i],this,this._fn);
 			}
-		}
+//		}
 	},
 	
 	_attach: function() {
@@ -106,7 +106,7 @@ var Observer = Ember.Object.extend({
 			this._logEvent('Observing',this._target.toString(),this._key);
 		}
 		if(this._key) {
-			this._target.addObserver(this._key,this,this._fn);
+			Ember.addObserver(this._target,this._key,this,this._fn);
 		}
 		if(Ember.Array.detect(this._getValue())) {
 			this._getValue().addArrayObserver(this);
@@ -117,7 +117,7 @@ var Observer = Ember.Object.extend({
 	_attachKeys: function() {
 		if(Ember.Observable.detect(this._getValue())) {
 			for(var i=0;i<this._keys.length;i++) {
-				this._getValue().addObserver(this._keys[i],this,this._fn);
+				Ember.addObserver(this._getValue(),this._keys[i],this,this._fn);
 			}
 		}
 	},
@@ -131,9 +131,9 @@ var Observer = Ember.Object.extend({
 	
 	_observeKey: function(key) {
 		this._keys.push(key);
-		if(Ember.Observable.detect(this._getValue())) {
-			this._getValue().addObserver(key,this,this._fn);
-		}
+//		if(Ember.Observable.detect(this._getValue())) {
+			Ember.addObserver(this._getValue(),key,this,this._fn);
+//		}
 	},
 	
 	_observe : function(key,validator,keepContext) {
@@ -294,6 +294,15 @@ var Observer = Ember.Object.extend({
 					child.destroy();
 				});
 				this._children.clear();
+			}
+			if(this._validator._revalidateOnStateChange===false) {
+				if(this._orgValue) {
+					// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
+					this._chain.pop();
+					// We re-observe to re-add children, but it seems we may "re-observe" ourselve as well like this.
+					this._validator._observe(this);
+				}
+				return;
 			}
 		}
 		
