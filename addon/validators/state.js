@@ -14,6 +14,8 @@ var State= Promise.extend({
 	
 	_stateDeps : null,
 	
+	_revalidateOnStateChange : true,
+	
 	validators: Ember.computed(function() {
 		var ret = {};
 		var self = this;
@@ -66,7 +68,7 @@ var State= Promise.extend({
 		return this._stateDeps.split(',');
 	},
 	
-	_validate: function(context,paths) {		
+	_validate: function(context,paths) {
 		var promises=Ember.A();
 		Ember.assert('The state validator can\'t validate enumerables',!Ember.Enumerable.detect(context.value));
 		var validators=this.get('validators');
@@ -98,7 +100,7 @@ var State= Promise.extend({
 		var states=this._getStates(observer._context);		
 		for(var propertyName in validators) {
 			if(states.indexOf(propertyName)>-1) {
-				observer._observe(validators[propertyName]);
+				observer._observe(validators[propertyName]);				
 			}
 		}
 		var deps=this._getDeps();
@@ -138,8 +140,45 @@ State.reopenClass({
 				_stateDeps: arguments[1]
 			});
 		}
+		this.revalidate=function(revalidate) {
+			this.reopen({
+				_revalidateOnStateChange:revalidate
+			});
+			return this;
+		}
+		return this;
+	},
+	
+	on : function() {
+		if(arguments.length===1) {
+			Ember.assert("When passing 1 argument to cond() the first argument is expected to be a single property to determine state",typeof arguments[0]==='string' && arguments[0].split(',').length===1);
+			
+			this.reopen({
+				_stateFn: function(object) {
+					return object.get(this._stateDeps);
+				},
+				_stateDeps: arguments[0]
+			});
+		}
+		if(arguments.length===2) {
+			Ember.assert("When passing 2 arguments to cond() the first argument is expected to be a string defining dependent attributes",typeof arguments[0]==='string');
+			Ember.assert("When passing 2 arguments to cond() the second argument is expected to be a function to determine state",typeof arguments[1]==='function');
+			
+			this.reopen({
+				_stateDeps: arguments[0],
+				_stateFn: arguments[1],
+			});
+		}
+		this.revalidate=function(revalidate) {
+			this.reopen({
+				_revalidateOnStateChange:revalidate
+			});
+			return this;
+		}
 		return this;
 	}
+
+
 });
 
 export default State;
