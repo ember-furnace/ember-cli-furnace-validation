@@ -94,11 +94,11 @@ var Observer = Ember.Object.extend({
 	},
 	
 	_detachKeys:function() {
-//		if(Ember.Observable.detect(this._orgValue)) {
+		if(Ember.Observable.detect(this._orgValue)) {
 			for(var i=0;i<this._keys.length;i++) {
 				Ember.removeObserver(this._orgValue,this._keys[i],this,this._fn);
 			}
-//		}
+		}
 	},
 	
 	_attach: function() {
@@ -131,9 +131,9 @@ var Observer = Ember.Object.extend({
 	
 	_observeKey: function(key) {
 		this._keys.push(key);
-//		if(Ember.Observable.detect(this._getValue())) {
+		if(Ember.Observable.detect(this._getValue())) {
 			Ember.addObserver(this._getValue(),key,this,this._fn);
-//		}
+		}
 	},
 	
 	_observe : function(key,validator,keepContext) {
