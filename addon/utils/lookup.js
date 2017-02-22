@@ -10,14 +10,14 @@ var getClass=function(owner,name) {
 			var Local=owner._lookupFactory('validator:local.'+name);
 			var Remote=owner._lookupFactory('validator:remote.'+name);
 
-			Ember.assert('Both local and remote validator for '+name+', this has not been implemented yet!',!(Local && Remote));
+			Ember.assert('Both local and remote validator for '+name+', this has not been implemented yet!',!(Local && Remote),true,{id:'furnace-validation:both-local-remote-not-implemented'});
 			
 			if(Local) {
 				Class=Local;
 			} else if(Remote) {
 				Class=Remote;
 			} else {
-				Ember.warn('No validator for '+name);
+				Ember.warn('No validator for '+name,false,{id:'furnace-validation:validator-not-found'});
 				return null;
 			}
 		}
