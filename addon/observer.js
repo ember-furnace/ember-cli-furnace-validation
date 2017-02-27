@@ -151,7 +151,10 @@ var Observer = Ember.Object.extend({
 			var _self=this;
 			value.forEach(function(item,index) {
 				var newChain=_self._chain.copy();
-				
+				if(!item) {
+					Ember.warn('Nothing to observe in enumerable',item,{id:'furnace-validation:observer-observe-undefined'});
+					return;
+				}
 				// FIXME: Adding index tot key here in invalid, passing a NULL key gives also errors
 				observer=Observer.create({					
 					_validator : validator,
