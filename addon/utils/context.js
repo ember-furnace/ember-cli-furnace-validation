@@ -1,12 +1,23 @@
 import Ember from 'ember';
 import Result from '../result';
-var nestContext= function(key,value) {
+
+function getValue(context,key) {
+	let target = (context.proxy ? context.proxy.get(key) : context.value);
+	if(Ember.Array.detect(target) && typeof key==='number' ) {
+		return target.objectAt(key)	
+	} else {
+		return target.get(key);
+	}
+}
+
+
+function nestContext(key,value) {
 	// We are validating a property on an object. Cancel validation if it is not a valid object, the object validator should determine if this is valid or not   
 	if(!(this.value instanceof Ember.Object)) {
 		return null;
 	}
-	
-	value=value || (this.proxy ? this.proxy.get(key) : this.value.get(key));
+
+	value=value || getValue(this,key);
 	
 	let proxy=null;
 	
@@ -36,7 +47,7 @@ var nestContext= function(key,value) {
 	return nestedContext;
 };
 
-var createContext  = function(value,key,result) {
+function createContext(value,key,result) {
 	let proxy=null;
 	if(Ember.PromiseProxyMixin.detect(value)) {
 		// Use value._content for furnace-forms async proxy, do nesting with proxy instead of value @ TODO: Fix detection
