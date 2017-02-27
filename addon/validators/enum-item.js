@@ -45,7 +45,8 @@ export default Promise.extend({
 	
 	_observe : function(observer) {
 		this._super(observer);
-		observer._observe('@each',this.get('validator'));
+		
+		observer._observeKey('@each');
 		
 //		var value=observer._getValue();
 //		if(value) {
