@@ -5,10 +5,10 @@ var Cache={classes : {},instances:{}};
 var getClass=function(owner,name) {
 	var Class=Cache.classes[name];
 	if(!Class) {
-		Class = owner._lookupFactory('validator:'+name);
+		Class = owner.factoryFor('validator:'+name);
 		if(!Class) {
-			var Local=owner._lookupFactory('validator:local.'+name);
-			var Remote=owner._lookupFactory('validator:remote.'+name);
+			var Local=owner.factoryFor('validator:local.'+name);
+			var Remote=owner.factoryFor('validator:remote.'+name);
 
 			Ember.assert('Both local and remote validator for '+name+', this has not been implemented yet!',!(Local && Remote),true,{id:'furnace-validation:both-local-remote-not-implemented'});
 			
@@ -21,7 +21,7 @@ var getClass=function(owner,name) {
 				return null;
 			}
 		}
-		Cache.classes[name]=Class;
+		Cache.classes[name]=Class.class;
 	}
 	return Class;
 };
