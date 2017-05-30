@@ -33,7 +33,8 @@ var getInstance=function(owner,name,options) {
 	}
 	// If we get options, the validator is uniquely configured for its context so create a new instance
 	if(options) {
-		 Instance=Class.create(owner.ownerInjection(),options);
+		// Somehow the order of arguments means something here...
+		Instance=Class.create(options,owner.ownerInjection());
 	} else {
 		Instance=Cache.instances[name];
 		if(!Instance) {
