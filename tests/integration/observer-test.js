@@ -244,7 +244,7 @@ test("States", function(assert) {
 		assert.equal(Result.isValid(),true,'Check valid');
 	});
 	
-	
+	// We allow an empty model by using the ignore validation
 	andThen(function() {
 		Target.set('model',null);
 	});
