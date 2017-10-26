@@ -2,7 +2,8 @@ import Ember from 'ember';
 import createContext from './utils/context';
 import Result from './result';
 import Queue from './observer-queue';
-import State from './validators/state';
+// FIXME: importing state validator here causing circular import dependency 
+//import State from './validators/state';
 
 var EachProxy = Ember.__loader.require('ember-runtime/system/each_proxy')['EachProxy'] || Ember.__loader.require('ember-runtime/system/each_proxy').default;
 
@@ -66,7 +67,6 @@ var Observer = Ember.Object.extend({
 		this._children=Ember.A();
 		
 		if(this._chain.length>100) {
-			console.log(this._chain);
 			throw "Too much recursion?";
 		}
 		var chain =this._chain.filterBy('target',this._target).filterBy('key',this._key);
@@ -291,7 +291,7 @@ var Observer = Ember.Object.extend({
 				});
 				this._children.clear();
 			}
-		} else if(this._validator instanceof State) {			
+		} else if(this._validator._stateFn) {
 			if(this._children) {
 				this._children.forEach(function(child) {
 					child.destroy();
