@@ -19,13 +19,14 @@ function nestContext(key,value) {
 
 	value=value || getValue(this,key);
 	
-	let proxy=null;
+	// FIXME: proxy not used here
+	//let proxy=null;
 	
 	if(Ember.PromiseProxyMixin.detect(value)) {
 		// Use value._content for furnace-forms async proxy, do nesting with proxy instead of value @ TODO: Fix detection 
 		if(value._content!==undefined) {
 			value=value._content;
-			proxy=value;
+			//proxy=value;
 		} else {
 			value=value.content;
 		}
@@ -45,7 +46,7 @@ function nestContext(key,value) {
 		
 	};
 	return nestedContext;
-};
+}
 
 function createContext(value,key,result) {
 	let proxy=null;
@@ -72,6 +73,6 @@ function createContext(value,key,result) {
 			this.stack.splice(0,this.stack.length);
 		}
 	};
-};
+}
 
 export default createContext;
