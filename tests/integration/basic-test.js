@@ -1,49 +1,46 @@
 import Ember from "ember";
-import { test } from 'ember-qunit';
+import {moduleFor, test } from 'ember-qunit';
 import startApp from '../helpers/start-app';
-import Validation from 'furnace-validation';
-//import PropertyValidator from 'furnace-validation/validators/property';
-//import ObjectValidator from 'furnace-validation/validators/object';
-
 var App;
-var Store;
- 
-module('Validator basic tests', {
-	setup: function() {
+moduleFor('Integration | Validation | Validator basic tests', {
+	integration:true,
+	setup() {
 		App = startApp();
-		Store=App.getContainer().lookup('store:main');
+		var owner=Ember.getOwner(this);
+		owner.factoryFor('initializer:furnace-validation').class.initialize(owner);
+		this.inject.service('store');
 	},
 	teardown: function() {
-		Ember.run(App, App.destroy);
+		Ember.run(App, 'destroy');
 	}
 });
 
-test("Single model", function( ) {
+test("Single model", function(assert) {
 	var Model,Validator;
-	Ember.run(function() {
-		Model=Store.createRecord('person',{firstName: 'Adrian',
+	Ember.run(() => {
+		Model=this.store.createRecord('person',{firstName: 'Adrian',
 											lastName: ''});
 	});
 
 	Validator=Model.validatorFor();
 	
 	Validator.validate(Model).then(function(result) {
-		equal(result.isValid(),false,'Check invalid');
+		assert.equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Model.set('lastName','Anderson');
 	
 	Validator.validate(Model).then(function(result) {
-		equal(result.isValid(),true,'Check valid');
+		assert.equal(result.isValid(),true,'Check valid');
 	}); 
 });
 
-test("Nested models", function( ) {
+test("Nested models", function(assert) {
 	var Model,Model2,Validator;
-	Ember.run(function() {
-		Model=Store.createRecord('person',{firstName: 'Adrian',
+	Ember.run(() => {
+		Model=this.store.createRecord('person',{firstName: 'Adrian',
 											lastName: 'Anderson'});
-		Model2=Store.createRecord('address',{street: 'A street',
+		Model2=this.store.createRecord('address',{street: 'A street',
 											zipcode: 'AA',
 											city:''});
 		
@@ -53,23 +50,23 @@ test("Nested models", function( ) {
 	Validator=Model.validatorFor();
 	
 	Validator.validate(Model).then(function(result) {
-		equal(result.isValid(),false,'Check invalid');
+		assert.equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Model2.set('city','Addison');
 	
 	Validator.validate(Model).then(function(result) {
-		equal(result.isValid(),true,'Check valid');
+		assert.equal(result.isValid(),true,'Check valid');
 	});
 });
 
-test("Nested models with circular reference", function( ) {
+test("Nested models with circular reference", function(assert) {
 	var Model,Model2,Validator;
 	
-	Ember.run(function() {
-		Model=Store.createRecord('person',{firstName: 'Adrian',
+	Ember.run(() => {
+		Model=this.store.createRecord('person',{firstName: 'Adrian',
 											lastName: 'Anderson'});
-		Model2=Store.createRecord('person',{firstName: 'Brian',
+		Model2=this.store.createRecord('person',{firstName: 'Brian',
 											lastName: '',
 											bestFriend:Model});
 				
@@ -80,23 +77,23 @@ test("Nested models with circular reference", function( ) {
 	Validator=Model.validatorFor();
 	
 	Validator.validate(Model).then(function(result) {
-		equal(result.isValid(),false,'Check invalid');
+		assert.equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Model2.set('lastName','Brooks');
 	
 	Validator.validate(Model).then(function(result) {
-		equal(result.isValid(),true,'Check valid');
+		assert.equal(result.isValid(),true,'Check valid');
 	});
 });
 
 
-test("Nested models in a list", function( ) {
+test("Nested models in a list", function(assert) {
 	var Model,Model2,Validator;
-	Ember.run(function() {
-		Model=Store.createRecord('person',{firstName: 'Adrian',
+	Ember.run(() => {
+		Model=this.store.createRecord('person',{firstName: 'Adrian',
 											lastName: 'Anderson'});
-		Model2=Store.createRecord('person',{firstName: 'Brian',
+		Model2=this.store.createRecord('person',{firstName: 'Brian',
 											lastName: ''});
 				
 		Model.get('friends').pushObject(Model2);
@@ -104,7 +101,7 @@ test("Nested models in a list", function( ) {
 	Validator=Model.validatorFor();
 
 	Validator.validate(Model).then(function(result) {
-		equal(result.isValid(),false,'Check invalid');
+		assert.equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Ember.run(function() {
@@ -112,17 +109,17 @@ test("Nested models in a list", function( ) {
 	});
 	
 	Validator.validate(Model).then(function(result) {
-		equal(result.isValid(),true,'Check valid');
+		assert.equal(result.isValid(),true,'Check valid');
 	});
 	
 });
 
-test("Nested models in a list with circular reference", function( ) {
+test("Nested models in a list with circular reference", function(assert) {
 	var Model,Model2,Validator;
-	Ember.run(function() {
-		Model=Store.createRecord('person',{firstName: 'Adrian',
+	Ember.run(() => {
+		Model=this.store.createRecord('person',{firstName: 'Adrian',
 											lastName: 'Anderson'});
-		Model2=Store.createRecord('person',{firstName: 'Brian',
+		Model2=this.store.createRecord('person',{firstName: 'Brian',
 											lastName: '',
 											});
 		
@@ -133,7 +130,7 @@ test("Nested models in a list with circular reference", function( ) {
 	Validator=Model.validatorFor();
 	
 	Validator.validate(Model).then(function(result) {
-		equal(result.isValid(),false,'Check invalid');
+		assert.equal(result.isValid(),false,'Check invalid');
 	}); 
 	
 	Ember.run(function() {
@@ -141,8 +138,8 @@ test("Nested models in a list with circular reference", function( ) {
 	});
 	
 	Validator.validate(Model).then(function(result) {
-		equal(result.isValid(),true,'Check valid');
-	}); 
+		assert.equal(result.isValid(),true,'Check valid');
+	});
 	
 
 });

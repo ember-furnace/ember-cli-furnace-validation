@@ -1,34 +1,27 @@
  import Ember from "ember";
- import { test } from 'ember-qunit';
- import startApp from '../helpers/start-app';
+ import { module, test } from 'ember-qunit';
  import Validation from 'furnace-validation';
  import PropertyValidator from 'furnace-validation/validators/property';
  import ObjectValidator from 'furnace-validation/validators/object';
- var App;
  
-module('Validator module tests', {
-	setup: function() {
-		App = startApp();
-	},
-	teardown: function() {
-		Ember.run(App, App.destroy);
-	}
-});
-
-test("Interface", function( ) {
+module('Unit | Module | Validator module tests', {
 	
-	ok(typeof Validation==='object',"Module interface not properly exported");
-	equal(Validation.Object,ObjectValidator,"Expected ObjectValidator class");
-	equal(Validation.Property,PropertyValidator,"Expected PropertyValidator class");
-	ok(typeof Validation.val==='function',"Expected val function");
-	ok(typeof Validation.enum==='function',"Expected list function");
 });
 
-test("Validator generation", function( ) {
+test("Interface", function(assert) {
+	
+	assert.ok(typeof Validation==='object',"Module interface not properly exported");
+	assert.equal(Validation.Object,ObjectValidator,"Expected ObjectValidator class");
+	assert.equal(Validation.Property,PropertyValidator,"Expected PropertyValidator class");
+	assert.ok(typeof Validation.val==='function',"Expected val function");
+	assert.ok(typeof Validation.enum==='function',"Expected list function");
+});
+
+test("Validator generation", function(assert) {
 	
 	
 	var validators=Validation.val({property : true,
 									object: true});
-	ok(validators instanceof Ember.ComputedProperty,'Check if validators register');
+	assert.ok(validators instanceof Ember.ComputedProperty,'Check if validators register');
 
 });

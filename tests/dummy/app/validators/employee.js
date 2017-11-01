@@ -6,15 +6,16 @@ export default Validation.State.extend({
 	}),
 	'manager' : Validation.object({
 		picture: Validation.val('required')
-	})
+	}),
+	'ignore' : Validation.val('ignore')
 	
-}).cond(function(object) {
+}).on('position',function(object) {
 	if(object===null)
-		return [];
+		return ['ignore'];
 	switch(object.get('position')) {
 	case 'Manager':
 		return ['person','employee','manager'];
 	default:
 		return ['person','employee'];
 	}
-},'position');
+});

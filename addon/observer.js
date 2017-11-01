@@ -2,9 +2,8 @@ import Ember from 'ember';
 import createContext from './utils/context';
 import Result from './result';
 import Queue from './observer-queue';
-import State from './validators/state';
-
-var EachProxy = Ember.__loader.require('ember-runtime/system/each_proxy')['EachProxy'] || Ember.__loader.require('ember-runtime/system/each_proxy').default;
+// FIXME: importing state validator here causing circular import dependency 
+//import State from './validators/state';
 
 /**
  * Observer for automatic object validation
@@ -66,7 +65,6 @@ var Observer = Ember.Object.extend({
 		this._children=Ember.A();
 		
 		if(this._chain.length>100) {
-			console.log(this._chain);
 			throw "Too much recursion?";
 		}
 		var chain =this._chain.filterBy('target',this._target).filterBy('key',this._key);
@@ -146,8 +144,8 @@ var Observer = Ember.Object.extend({
 		var observer=null;
 		
 		var value=this._getValue();
-		if(value instanceof EachProxy) {
-			value=Ember.get(value,'_content');
+		if(key==='@each') {
+			value=Ember.get(value,'@each._content');
 			var _self=this;
 			value.forEach(function(item,index) {
 				var newChain=_self._chain.copy();
@@ -155,11 +153,10 @@ var Observer = Ember.Object.extend({
 					Ember.warn('Nothing to observe in enumerable',item,{id:'furnace-validation:observer-observe-undefined'});
 					return;
 				}
-				// FIXME: Adding index tot key here in invalid, passing a NULL key gives also errors
 				observer=Observer.create({					
 					_validator : validator,
 					_target : item,
-					_key : key+'.'+index,
+					_key : index,
 					_callback : _self._callback,
 					_queue : _self._queue,
 					_context : _self._context.nest(index,item),
@@ -291,7 +288,7 @@ var Observer = Ember.Object.extend({
 				});
 				this._children.clear();
 			}
-		} else if(this._validator instanceof State) {			
+		} else if(this._validator._stateFn) {
 			if(this._children) {
 				this._children.forEach(function(child) {
 					child.destroy();
