@@ -1,12 +1,17 @@
 import Ember from "ember";
 import {moduleFor, test } from 'ember-qunit';
-
+import startApp from '../helpers/start-app';
+var App;
 moduleFor('Integration | Validation | Validator basic tests', {
 	integration:true,
 	setup() {
+		App = startApp();
 		var owner=Ember.getOwner(this);
 		owner.factoryFor('initializer:furnace-validation').class.initialize(owner);
 		this.inject.service('store');
+	},
+	teardown: function() {
+		Ember.run(App, 'destroy');
 	}
 });
 
@@ -134,7 +139,7 @@ test("Nested models in a list with circular reference", function(assert) {
 	
 	Validator.validate(Model).then(function(result) {
 		assert.equal(result.isValid(),true,'Check valid');
-	}); 
+	});
 	
 
 });
