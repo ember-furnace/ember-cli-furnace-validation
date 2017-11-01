@@ -43,11 +43,10 @@ test('Routes', function(assert) {
 });
 
 test('Controllers', function(assert) {
-	var Factory,Validator,Controller;
+	var Validator,Controller;
 	assert.expect(4);
 
-	Factory=Ember.getOwner(this).factoryFor('controller:dummy');
-	Controller=Factory.create();
+	Controller=Ember.getOwner(this).lookup('controller:dummy');
 	
 	assert.ok(Controller instanceof Ember.Controller,'Initialize Dummy controller');
 	
