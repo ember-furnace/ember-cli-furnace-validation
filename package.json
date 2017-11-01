@@ -1,6 +1,6 @@
 {
   "name": "ember-cli-furnace-validation",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Validation support for ember-cli apps.",
   "directories": {
     "doc": "doc",
