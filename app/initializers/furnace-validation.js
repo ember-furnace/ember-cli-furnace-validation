@@ -2,10 +2,16 @@ import Lookup from 'furnace-validation/utils/lookup';
 import Observer from 'furnace-validation/observer';
 import ObserverQueue from 'furnace-validation/observer-queue';
 import Validator from 'furnace-validation/validators/abstract';
+import CollectionValidator from 'furnace-validation/validators/collection';
+import EnumValidator from 'furnace-validation/validators/enum';
 import Result from 'furnace-validation/result';
 
 export function initialize( application) {
 	application.register('validator:lookup',Lookup, {instantiate:false});
+	
+	application.register('validator:collection',CollectionValidator, {instantiate:false});
+	application.register('validator:enum',EnumValidator, {instantiate:false});
+	
 	application.inject('route','validatorFor','validator:lookup');
 	application.inject('model','validatorFor','validator:lookup');
 	application.inject('controller','validatorFor','validator:lookup');

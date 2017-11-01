@@ -36,8 +36,8 @@ module.exports = function(environment) {
     // keep test console output quieter
     ENV.APP.LOG_ACTIVE_GENERATION = false;
     ENV.APP.LOG_VIEW_LOOKUPS = false;
-    ENV.APP.LOG_VALIDATIONS = true;
-    ENV.APP.LOG_VALIDATION_OBSERVER = true;
+    ENV.APP.LOG_VALIDATIONS = false;
+    ENV.APP.LOG_VALIDATION_OBSERVER = false;
     ENV.APP.rootElement = '#ember-testing';
   }
 

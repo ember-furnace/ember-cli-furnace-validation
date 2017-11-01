@@ -141,20 +141,20 @@ test("Nested models in a list", function(assert) {
 	andThen(function() {
 		assert.equal(Result.isValid(),false,'Check invalid');
 	});
-//	
-//	andThen(function() {
-//		Model2.set('lastName','Brooks');
-//	});
-//	andThen(function() {
-//		equal(Result.isValid(),true,'Check valid');
-//	}); 
-//	
-//	andThen(function() {
-//		Model2.set('lastName','');
-//	});
-//	andThen(function() {
-//		equal(Result.isValid(),false,'Check invalid');
-//	}); 
+	
+	andThen(function() {
+		Model2.set('lastName','Brooks');
+	});
+	andThen(function() {
+		assert.equal(Result.isValid(),true,'Check valid');
+	}); 
+	
+	andThen(function() {
+		Model2.set('lastName','');
+	});
+	andThen(function() {
+		assert.equal(Result.isValid(),false,'Check invalid');
+	}); 
 	
 });
 

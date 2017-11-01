@@ -8,7 +8,6 @@ import ObjectValidator from '../validators/object';
 import StateValidator from '../validators/state';
 import PropertyValidator from '../validators/property';
 import CollectionValidator from '../validators/collection';
-import EnumItemValidator from '../validators/enum-item';
 
 function getValidator(validator,options) {	
 	if(options) {
@@ -21,9 +20,6 @@ function getValidator(validator,options) {
 	var _validator;
 	var owner=Ember.getOwner(this);
 	switch(validator) { 
-		case 'enum':
-			_validator=EnumItemValidator.create(owner.ownerInjection(),{_validators : options});
-			break;
 		case 'state':
 			_validator=StateValidator.extend(options).create(owner.ownerInjection());
 			break;

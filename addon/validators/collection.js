@@ -56,23 +56,7 @@ export default Promise.extend({
 	pushObject : function(validator) {
 		this._validatorArray.pushObject(validator);
 	},
-	
-//	unknownProperty: function(key) {
-//		var validators=this.get('validators');
-//		var ret = Ember.A();
-//		validators.forEach(function(validator) {
-//			var validator=validator.get(key);
-//			if(validator instanceof Abstract) {
-//				ret.pushObject(validator);
-//			}
-//		});
-//		if(ret.length) {
-//			ret= Ember.Object.extend(Proxy).create({_validators:ret});
-//			return ret;
-//		}		
-//		return undefined;
-//	},
-	
+		
 	getLength : function() {
 		return this._validatorArray.length;
 	},

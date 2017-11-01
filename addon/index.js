@@ -22,7 +22,7 @@ import getValidator from './utils/get-validator';
  * @private
  */
 var getMeta=function(validators,collection) {
-	collection=collection || CollectionValidator;
+	collection=collection || 'collection';
 	return {
 		type: 'validation',
 		collection: collection,
@@ -41,15 +41,21 @@ var getComputed=function() {
 		if(!this._validators[key]) {			
 			var meta = this.constructor.metaForProperty(key);
 			if(meta.type==='validation') {
-				this._validators[key]=meta.collection.create();
-				
+				this._validators[key]=Ember.getOwner(this).factoryFor('validator:'+meta.collection).class.create();
 				var validators=meta.validators;
-				for(var validator in validators) {					
+				for(let validator in validators) {
 					this._validators[key].push(getValidator.call(this,validator,validators[validator]));
-					
+				}
+				if(meta.itemValidator) {
+					meta=meta.itemValidator;
+					this._validators[key]['_itemValidator']=Ember.getOwner(this).factoryFor('validator:'+meta.collection).class.create();
+					validators=meta.validators;
+					for(let validator in validators) {
+						this._validators[key]['_itemValidator'].push(getValidator.call(this,validator,validators[validator]));
+					}
 				}
 			}
-		}			
+		}
 		return this._validators[key];
 	});
 };
@@ -100,6 +106,7 @@ export default {
 	 */
 	Promise: PromiseValidator,
 	
+	Enum: EnumValidator,
 	/**
 	 * Add validation to an enumerable property.
 	 * 
@@ -113,20 +120,23 @@ export default {
 	 * @return Ember.ComputedProperty 
 	 */
 	enum : function(validators,options) {
-		var listValidators={};
-		if(validators) {
-			listValidators=getOptions(validators,options);
-		}
-		var meta = getMeta(listValidators,EnumValidator);
-		
-		var list = getComputed(true).meta(meta);
-		list.val = function(validators,options) {
-			var itemValidators=this._meta.validators || {};
-			itemValidators['enum']=getOptions(validators,options);
-			var meta = getMeta(itemValidators);
-			return this.meta(meta);
+		validators=getOptions(validators,options);
+
+		var meta = getMeta(validators,'enum');
+		var computed = getComputed().meta(meta).readOnly();
+		computed.on=function() {
+			Ember.assert('Not implemented');
 		};
-		return list;
+		computed.val=function() {
+			Ember.deprecate('Using the val() helper on an enum is deprecated, please use the item() helper instead',false,{id:'furnace-validation:enum-val-deprecation',until:'0.4.0'});
+			return this.item(...arguments);
+		};
+		computed.item=function(validators,options) {
+			validators=getOptions(validators,options);
+			this._meta.itemValidator=getMeta(validators);
+			return this;
+		};
+		return computed;
 	},
 	
 	/**
@@ -170,7 +180,7 @@ export default {
 		states=states || {};
 		states._stateFn=fn;
 		states._stateDeps=deps;
-		return this.val('state' ,states);
+		return this.val('state',states);
 	},
 	
 	/**
@@ -189,8 +199,9 @@ export default {
 		var meta = getMeta(validators);
 		var computed = getComputed().meta(meta).readOnly();
 		computed.on=function() {
-			for(var validator in this._meta.validators) {					
-				this._meta.validators[validator]._depKeys=arguments[0];				
+			// FIXME: only the collection should have the dependend key and in turn should trigger validation
+			for(var validator in this._meta.validators) {
+				this._meta.validators[validator]._depKeys=arguments[0];
 			}
 			return this;
 		};
