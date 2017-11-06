@@ -31,7 +31,7 @@ var Observer = Ember.Object.extend({
 	
 	_chain : null,
 	
-	_getValue : function() {		
+	_getValue : function() {
 		Ember.warn('Validation observer received an unobservable object '+this._target+':'+this._key,Ember.Observable.detect(this._target),{id:'furnace-validation:observer-target-not-observable'});		
 		var value = this._key ? Ember.get(this._target,this._key) : this._target;
 		if(Ember.PromiseProxyMixin.detect(value)) {
@@ -124,7 +124,9 @@ var Observer = Ember.Object.extend({
 	},
 	
 	arrayDidChange: function(arr) {
-		this._fnOnce(arr,this._key);
+		if(arr===this._target) {
+			this._fn(arr,this._key);
+		}
 	},
 	
 	_observeKey: function(key) {
@@ -156,7 +158,7 @@ var Observer = Ember.Object.extend({
 				observer=Observer.create({					
 					_validator : validator,
 					_target : item,
-					_key : index,
+					_key : null,
 					_callback : _self._callback,
 					_queue : _self._queue,
 					_context : _self._context.nest(index,item),

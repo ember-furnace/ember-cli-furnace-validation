@@ -158,6 +158,56 @@ test("Nested models in a list", function(assert) {
 	
 });
 
+
+test("Nested models in a list updated", function(assert) {
+	var company,employee1,employee2,validator,target=Ember.Object.create({'model': null}),result;
+	Ember.run(() => {
+		company=this.store.createRecord('company',{
+			name: 'Test Corp Inc.',
+			employees: [this.store.createRecord('employee',{
+				firstName: 'Brian',
+				lastName: 'Brooks',
+				position: 'Secretary'
+			})]
+		});
+	});
+
+	validator=company.validatorFor();
+
+	validator.observe(target,'model',function(_result){
+		result=_result;
+	});
+	
+	andThen(function() {
+		target.set('model',company);
+	});
+	
+	andThen(function() {
+		assert.equal(result.isValid(),true,'Check valid');
+	});
+	andThen(()=> {
+		employee1=this.store.createRecord('employee',{
+			firstName: 'Adrian',
+			lastName: 'Anderson',
+			position: 'Mailboy'
+		});
+		employee2=this.store.createRecord('employee',{
+			firstName: 'Brian',
+			lastName: 'Brooks',
+			position: 'Secretary'
+		});
+		company.get('employees').setObjects([employee1,employee2]);
+	});
+	
+	andThen(function() {
+		target.set('model',company);
+	});
+	
+	andThen(function() {
+		assert.equal(result.isValid(),true,'Check valid');
+	});
+});
+
 test("Nested models in a list with circular reference", function(assert) {
 	var Model,Model2,Validator,Target=Ember.Object.create({'model': null}),Result;
 	Ember.run(() => {
