@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { module, test } from 'ember-qunit';
 import ObjectValidator from 'furnace-validation/validators/object';
+import wait from 'ember-test-helpers/wait';
 
 module('Unit | Validator | ObjectValidator', {
 });
@@ -31,4 +32,6 @@ test("Check validator", function(assert) {
 	Validator.validate(Validator).then(function(result) {
 		assert.equal(result.isValid(),true,'Check "TypeCheck" valid');		
 	});
+	
+	return wait();
 });
