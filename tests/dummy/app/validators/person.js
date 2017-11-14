@@ -15,4 +15,10 @@ export default Validation.Object.extend( {
 	}).item('person'),
 	
 	address: Validation.val('address'),
+	
+	hobbies: Validation.enum({
+		length:{
+			max:2
+		}
+	}),
 });

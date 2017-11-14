@@ -1,4 +1,6 @@
 import DS from 'ember-data';
+import Ember from 'ember';
+
 export default DS.Model.extend({
 
 	firstName : DS.attr('string'),
@@ -12,4 +14,10 @@ export default DS.Model.extend({
 	friends : DS.hasMany('person',{inverse: 'friends'}),
 	
 	address : DS.belongsTo('address'),
+	
+	hobbies: Ember.computed({
+		get() {
+			return Ember.A();
+		}
+	})
 });

@@ -1,6 +1,7 @@
 import Ember from "ember";
 import { moduleFor,test } from 'ember-qunit';
 import startApp from '../helpers/start-app';
+import wait from 'ember-test-helpers/wait';
 var App;
 moduleFor('Integration | Observer | Basic tests', {
 	integration:true,
@@ -318,4 +319,47 @@ test("States", function(assert) {
 		assert.equal(Result.isValid(),true,'Check valid');
 	});
 	
+});
+
+
+test("Enumerable without itemValidation", function(assert) {
+	var Model,Validator,Target=Ember.Object.create({'model': null}),Result;
+	
+	Ember.run(() => {
+		Model=this.store.createRecord('person',{firstName: 'Adrian',
+											lastName: 'Anderson'});
+	});
+	
+	Validator=Model.validatorFor();
+	
+	Validator.observe(Target,'model',function(result){
+		Result=result;
+	});
+
+	
+	andThen(function() {
+		Target.set('model',Model);
+	});
+	
+	andThen(function() {
+		assert.equal(Result.isValid(),true,'Check valid');
+	});
+	
+	andThen(function() {
+		Model.get('hobbies').setObjects(['a','b','c']);
+	});
+	
+	andThen(function() {
+		return wait().then(function() {
+			assert.equal(Result.isValid(),false,'Check invalid');
+		});
+	});
+	
+	andThen(function() {
+		Model.get('hobbies').popObject();
+	});
+	
+	andThen(function() {
+		assert.equal(Result.isValid(),true,'Check valid');
+	});
 });

@@ -124,7 +124,7 @@ var Observer = Ember.Object.extend({
 	},
 	
 	arrayDidChange: function(arr) {
-		if(arr===this._target) {
+		if(arr===this._getValue()) {
 			this._fn(arr,this._key);
 		}
 	},
