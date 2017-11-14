@@ -13,7 +13,7 @@ function getValue(context,key) {
 
 function nestContext(key,value) {
 	// We are validating a property on an object. Cancel validation if it is not a valid object, the object validator should determine if this is valid or not   
-	if(!(this.value instanceof Ember.Object)) {
+	if(arguments.length<2 && !(this.value instanceof Ember.Object)) {
 		return null;
 	}
 
