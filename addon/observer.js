@@ -67,9 +67,9 @@ var Observer = Ember.Object.extend({
 		if(this._chain.length>100) {
 			throw "Too much recursion?";
 		}
-		var chain =this._chain.filterBy('target',this._target).filterBy('key',this._key);
-		if(chain.length!==0) {			
-			if(chain.filterBy('validator',this._validator).length===0) {
+		var chain =this._chain.filter(chain => chain.target===this._target).filter(chain => chain.key===this._key);
+		if(chain.length!==0) {
+			if(chain.filter(chain => chain.validator===this._validator).length===0) {
 				this._validator._observe(this);
 			}
 		}
@@ -150,7 +150,7 @@ var Observer = Ember.Object.extend({
 			value=Ember.get(value,'@each._content');
 			var _self=this;
 			value.forEach(function(item,index) {
-				var newChain=_self._chain.copy();
+				var newChain=_self._chain.slice();
 				if(!item) {
 					Ember.warn('Nothing to observe in enumerable',item,{id:'furnace-validation:observer-observe-undefined'});
 					return;
@@ -166,7 +166,7 @@ var Observer = Ember.Object.extend({
 				});
 			});
 		} else if(value) {
-			var newChain=this._chain.copy();
+			var newChain=this._chain.slice();
 			if( key==="@each") {
 				observer=Observer.create({
 					_validator : validator,

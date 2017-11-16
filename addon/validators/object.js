@@ -66,7 +66,7 @@ export default Promise.extend({
 		// - Additionally, a nested object may run a different object check on a related parent object.
 		// - Finally, we could do different object based validations on the same property
 		// So: check both the value as the validator instance in the stack
-		if(context.stack.filterBy('value',context.value).filterBy('validator',this).length===0) {
+		if(context.stack.filter(stack => stack.value===context.value).filter(stack => stack.validator===this).length===0) {
 			context.stack.push({value:context.value,
 								validator:this});
 			var validators=this.get('validators');

@@ -15,7 +15,7 @@ export default Collection.extend({
 		promises.push(this._super(...arguments));
 		var validator=this;
 		if(context.value) {
-			Ember.assert('The enum validator received a value that is not enumerable!',Ember.Enumerable.detect(context.value));
+			Ember.assert('The enum validator received a value that is not enumerable!',context.value instanceof Array || Ember.Enumerable.detect(context.value));
 			var itemValidator=this._itemValidator;
 			if(itemValidator) {
 				context.value.forEach(function(item,index) {

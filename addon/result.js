@@ -256,7 +256,7 @@ export default Ember.Object.extend({
 			messages=this.getAll();
 		}
 		if(type && messages) {
-			return messages.filterBy('type',type);
+			return messages.filter(message => message.type===type);
 		}
 		return messages;
 	},
