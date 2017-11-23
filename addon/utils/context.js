@@ -16,8 +16,11 @@ function nestContext(key,value) {
 	if(arguments.length<2 && !(this.value instanceof Ember.Object)) {
 		return null;
 	}
-
-	value=value || getValue(this,key);
+	
+	// If value is explicitely specified, don't get by key
+	if(arguments.length===1) {
+		value= getValue(this,key);
+	}
 	
 	// FIXME: proxy not used here
 	//let proxy=null;
