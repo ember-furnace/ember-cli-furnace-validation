@@ -120,7 +120,11 @@ export default {
 	 * @return Ember.ComputedProperty 
 	 */
 	enum : function(validators,options) {
-		validators=getOptions(validators,options);
+		if(arguments.length) {
+			validators=getOptions(validators,options);
+		} else {
+			validators=[];
+		}
 
 		var meta = getMeta(validators,'enum');
 		var computed = getComputed().meta(meta).readOnly();

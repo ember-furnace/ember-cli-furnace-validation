@@ -24,7 +24,11 @@ function getValidator(validator,options) {
 			_validator=StateValidator.extend(options).create(owner.ownerInjection());
 			break;
 		case 'object':
-			_validator=ObjectValidator.extend(options).create(owner.ownerInjection());
+			if(options===null) {
+				_validator=ObjectValidator.create(owner.ownerInjection());
+			} else {
+				_validator=ObjectValidator.extend(options).create(owner.ownerInjection());
+			}
 			break;
 		case 'collection':
 			_validator=CollectionValidator.extend().val(options).create(owner.ownerInjection());

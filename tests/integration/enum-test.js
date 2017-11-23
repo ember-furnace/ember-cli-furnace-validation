@@ -3,6 +3,8 @@ import { moduleFor, test } from 'ember-qunit';
 import startApp from '../helpers/start-app';
 import EnumValidator from 'furnace-validation/validators/enum';
 import LengthValidator from 'dummy/validators/local/length';
+import ObjectValidator from 'furnace-validation/validators/object';
+import Validation from 'furnace-validation';
 var App;
 
 moduleFor('Integration | Validator | EnumValidator', {
@@ -127,4 +129,33 @@ test("Check validator with itemValidator", function(assert) {
 		assert.equal(result.isValid(),false,'Check array invalid');
 	});
 
+});
+
+test("Empty enum-validator using helper", function(assert) {
+	var validator = Validation.Object.extend({
+		test:Validation.enum().item({
+			object:true,
+			required:true
+		})
+	}).create(Ember.getOwner(this).ownerInjection());
+	
+	assert.ok(validator instanceof ObjectValidator, 'Check instance');
+	
+	var object= Ember.Object.create({ test : [] });
+	
+	validator.validate(object).then(function(result) {
+		assert.equal(result.isValid(),true,'Check empty array valid');
+	});
+	
+	object.test.push(Ember.Object.create());
+	
+	validator.validate(object).then(function(result) {
+		assert.equal(result.isValid(),true,'Check array with object valid');
+	});
+	
+	object.test.push(null);
+	
+	validator.validate(object).then(function(result) {
+		assert.equal(result.isValid(),false,'Check array with null invalid');
+	});
 });
