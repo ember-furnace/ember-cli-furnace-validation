@@ -123,7 +123,7 @@ export default {
 		if(arguments.length) {
 			validators=getOptions(validators,options);
 		} else {
-			validators=[];
+			validators={};
 		}
 
 		var meta = getMeta(validators,'enum');
