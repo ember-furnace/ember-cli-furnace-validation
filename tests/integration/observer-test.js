@@ -45,6 +45,38 @@ test("Single model", function(assert) {
 	}); 
 });
 
+test("Observer validation queueing after observer.run", function(assert) {
+	var Model,Validator,Target=Ember.Object.create({'model': null}),Result;
+	
+	Ember.run(() => {
+		Model=this.store.createRecord('person',{firstName: 'Adrian',
+											lastName: 'Anderson'});
+	});
+	
+	Validator=Model.validatorFor();
+	
+	var observer=Validator.observe(Target,'model',function(result){
+		Result=result;
+	});
+
+	andThen(function() {
+		Target.set('model',Model);
+	});
+	andThen(function() {
+		assert.equal(Result.isValid(),true,'Check valid');
+	});
+	
+	andThen(function() {
+		observer.run();
+		Model.set('lastName','');
+	});
+	
+	andThen(function() {
+		assert.equal(Result.isValid(),false,'Check invalid');
+	});
+	
+});
+
 test("Nested models", function(assert) {
 	var Model,Model2,Validator,Target=Ember.Object.create({'model': null}),Result;
 	Ember.run(() => {
