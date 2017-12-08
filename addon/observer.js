@@ -207,9 +207,17 @@ var Observer = Ember.Object.extend({
 	},
 	
 	run:function(callback,callDefaultCallback) {
-		Ember.assert("Can't run validator observer while queue is active",this._queue._running===false);
-		// FIXME: implement defer or refactor queue runner with promises 
+		// FIXME: implement defer or refactor queue runner with promises
+		
+		// First lock the queue
+		// Wait for sync and gather all queued evenets
 		this._queue._running=true;
+		Ember.run.scheduleOnce('sync',this,this._runOnce,callback,callDefaultCallback);
+	},
+	
+	_runOnce:function(callback,callDefaultCallback) {
+		// Clear stuff in the queue
+		this._queue._clear();
 		var _callback=this._callback;
 		var context=this._context;
 		

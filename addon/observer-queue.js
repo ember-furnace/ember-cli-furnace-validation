@@ -41,6 +41,10 @@ export default Ember.Object.extend({
 		this._queue.push({validator : validator, context: context,sender: sender});
 	},
 	
+	_clear() {
+		this.length=0;
+		this._queue.length=0;
+	},
 	
 	run: function() {
 		if(this._running) {
