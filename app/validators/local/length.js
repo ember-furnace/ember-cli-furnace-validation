@@ -52,7 +52,7 @@ export default Validator.extend({
 		var length=value.length;
 		if(this.get('exact')!==false) {
 			// If input value is too short, user may be still be working on entry, delay error
-			if(length<this.min) {
+			if(length<this.exact) {
 				result.addError(context,this.messages.stringWrongLength,[this.get('exact'),length],'delayed');
 			} else if(length!==this.exact) {
 				result.addError(context,this.messages.stringWrongLength,[this.get('exact'),length]);
