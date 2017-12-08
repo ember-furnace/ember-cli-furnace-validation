@@ -74,9 +74,9 @@ export default Promise.extend({
 				var nestedContext=context.nest(propertyName);
 				if(nestedContext) {
 					if(!paths || paths.indexOf(nestedContext.path)>-1) {
-						context.result.setValidation(nestedContext,paths);
+						context.result.setValidation(nestedContext);
+						promises.pushObject(validators[propertyName]._validate(nestedContext));
 					}
-					promises.pushObject(validators[propertyName]._validate(nestedContext));
 				}
 			}
 			promises.pushObject(this._super(context,paths));
