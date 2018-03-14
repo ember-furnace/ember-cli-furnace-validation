@@ -212,7 +212,7 @@ var Observer = Ember.Object.extend({
 		// First lock the queue
 		// Wait for sync and gather all queued evenets
 		this._queue._running=true;
-		Ember.run.scheduleOnce('sync',this,this._runOnce,callback,callDefaultCallback);
+		Ember.run.scheduleOnce('actions',this,this._runOnce,callback,callDefaultCallback);
 	},
 	
 	_runOnce:function(callback,callDefaultCallback) {
@@ -322,7 +322,7 @@ var Observer = Ember.Object.extend({
 			}
 		}
 		
-		Ember.run.scheduleOnce('sync',this,this._fnOnce,sender, key, value, rev);
+		Ember.run.scheduleOnce('actions',this,this._fnOnce,sender, key, value, rev);
 	},	
 	
 	_logEvent : function() {
