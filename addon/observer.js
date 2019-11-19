@@ -45,9 +45,11 @@ var Observer = Ember.Object.extend({
 	_children : null,
 	
 	_queue : null,
+
+	_scheduled: null,
 	
 	init : function() {
-		
+
 		if(!this._result) {
 			this._result=Result.create();
 		}
@@ -241,6 +243,11 @@ var Observer = Ember.Object.extend({
 	},
 	
 	destroy : function() {
+
+		if(this._scheduled) {
+			Ember.run.cancel(this._scheduled);
+		}
+
 		this._detach();
 		if(this._children) {
 			this._children.forEach(function(child){
@@ -255,7 +262,10 @@ var Observer = Ember.Object.extend({
 		return this._context.result;
 	},
 	
-	_fnOnce : function(sender, key) {		
+	_fnOnce : function(sender, key) {
+
+		this._scheduled=null;
+
 		if(key===this._key) {
 			if(this._debugLogging) {
 				this._logEvent('Handeling change',sender.toString(),key);
@@ -322,7 +332,7 @@ var Observer = Ember.Object.extend({
 			}
 		}
 		
-		Ember.run.scheduleOnce('actions',this,this._fnOnce,sender, key, value, rev);
+		this._scheduled=Ember.run.scheduleOnce('actions',this,this._fnOnce,sender, key, value, rev);
 	},	
 	
 	_logEvent : function() {
