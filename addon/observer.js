@@ -85,7 +85,10 @@ var Observer = Ember.Object.extend({
 		
 	},
 	
-	_detach:function() {		
+	_detach:function() {
+        if(this._debugLogging) {
+            this._logEvent('Detaching from',this._target.toString(),this._key);
+        }
 		Ember.removeObserver(this._target,this._key,this,this._fn);
 		if(Ember.Array.detect(this._orgValue)) {
 			this._orgValue.removeArrayObserver(this);
@@ -257,7 +260,7 @@ var Observer = Ember.Object.extend({
 		}
 		this._super();
 	},
-	
+
 	getResult: function() {
 		return this._context.result;
 	},
@@ -265,6 +268,10 @@ var Observer = Ember.Object.extend({
 	_fnOnce : function(sender, key) {
 
 		this._scheduled=null;
+
+		if(this.isDestroying) {
+			return;
+		}
 
 		if(key===this._key) {
 			if(this._debugLogging) {
@@ -292,7 +299,8 @@ var Observer = Ember.Object.extend({
 			// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
 			this._chain.pop();
 			// We re-observe to re-add children, but it seems we may "re-observe" ourselve as well like this.
-			this._validator._observe(this);
+            //this._detach();
+			//this._validator._observe(this);
 		}
 	},
 	
@@ -315,21 +323,49 @@ var Observer = Ember.Object.extend({
 				this._children.clear();
 			}
 		} else if(this._validator._stateFn) {
-			if(this._children) {
-				this._children.forEach(function(child) {
-					child.destroy();
-				});
-				this._children.clear();
-			}
-			if(this._validator._revalidateOnStateChange===false) {
-				if(this._orgValue) {
-					// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
-					this._chain.pop();
-					// We re-observe to re-add children, but it seems we may "re-observe" ourselve as well like this.
-					this._validator._observe(this);
-				}
-				return;
-			}
+            let validators=this.get('_validator.validators');
+            let states=this.get('_validator')._getStates(this._context);
+            let children=this._children.toArray();
+            this._children.clear();
+
+            let changed=false;
+            for(let propertyName in validators) {
+                if(states.indexOf(propertyName)>-1) {
+                    let observer = children.findBy('_validator',validators[propertyName]);
+                    if(observer) {
+                        this._children.push(observer);
+                        children.removeObject(observer);
+                    } else {
+                        this._observe(validators[propertyName]);
+                        changed=true;
+                    }
+                }
+            }
+            if(children.length) {
+                children.invoke('destroy');
+                children.clear();
+                changed=true;
+            }
+
+            if(!changed || this._validator._revalidateOnStateChange===false) {
+                return;
+            }
+			// if(this._children) {
+			// 	this._children.forEach(function(child) {
+			// 		child.destroy();
+			// 	});
+			// 	this._children.clear();
+			// }
+			// if(this._validator._revalidateOnStateChange===false) {
+			// 	if(this._orgValue) {
+			// 		// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
+			// 		this._chain.pop();
+			// 		// We re-observe to re-add children, but it seems we may "re-observe" ourselve as well like this.
+            //         this._detach();
+			// 		this._validator._observe(this);
+			// 	}
+			// 	return;
+			// }
 		}
 		
 		this._scheduled=Ember.run.scheduleOnce('actions',this,this._fnOnce,sender, key, value, rev);
@@ -337,7 +373,7 @@ var Observer = Ember.Object.extend({
 	
 	_logEvent : function() {
 		var args=arguments;
-		args[0]='Validation observer: ' + arguments[0];
+		args[0]='Validation observer ('+this._validator.toString()+'): ' + arguments[0];
 		Ember.Logger.info.apply(this,args);
 	}
 	
