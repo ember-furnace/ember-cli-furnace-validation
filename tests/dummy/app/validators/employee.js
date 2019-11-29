@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import Validation from 'furnace-validation';
 export default Validation.State.extend({
 	'person' : Validation.val('person'),
@@ -12,7 +13,7 @@ export default Validation.State.extend({
 }).on('position',function(object) {
 	if(object===null)
 		return ['ignore'];
-	switch(object.get('position')) {
+	switch(Ember.get(object,'position')) {
 	case 'Manager':
 		return ['person','employee','manager'];
 	default:
