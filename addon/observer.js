@@ -89,8 +89,17 @@ var Observer = Ember.Object.extend({
         if(this._debugLogging) {
             this._logEvent('Detaching from',this._target.toString(),this._key);
         }
-		Ember.removeObserver(this._target,this._key,this,this._fn);
-		if(Ember.Array.detect(this._orgValue)) {
+
+        let chain =this._chain.filter(chain => chain.target===this._target && chain.key===this._key && chain.validator===this._validator);
+        chain.forEach((obj) => {
+			this._chain.splice(this._chain.indexOf(obj));
+		});
+
+        if(this._orgValue) {
+			Ember.removeObserver(this._target, this._key, this, this._fn);
+		}
+
+        if(Ember.Array.detect(this._orgValue)) {
 			this._orgValue.removeArrayObserver(this);
 		}
 		this._detachKeys();
@@ -135,7 +144,9 @@ var Observer = Ember.Object.extend({
 	},
 	
 	_observeKey: function(key) {
-		this._keys.push(key);
+		if(!this._keys.includes(key)) {
+			this._keys.push(key);
+		}
 		if(Ember.Observable.detect(this._getValue())) {
 			Ember.addObserver(this._getValue(),key,this,this._fn);
 		}
@@ -280,28 +291,25 @@ var Observer = Ember.Object.extend({
 			if(this._keys.length) {
 				this._detachKeys();
 			}
-			
+
 			this._orgValue=this._getValue();
 
 			this._context.value=this._getValue();
 
-			if(this._keys.length) {
-				this._attachKeys();
-			}
-			
+			this._validator._observe(this);
 		}	
 		
 
 		this._queue.push(this._validator,this._context,sender);
 		this._queue.run();
 		
-		if(this._orgValue) {
+		//if(this._orgValue) {
 			// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
-			this._chain.pop();
+
 			// We re-observe to re-add children, but it seems we may "re-observe" ourselve as well like this.
             //this._detach();
 			//this._validator._observe(this);
-		}
+		//}
 	},
 	
 	_fn: function(sender, key, value, rev){
