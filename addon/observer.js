@@ -330,51 +330,61 @@ var Observer = Ember.Object.extend({
 				});
 				this._children.clear();
 			}
-		} else if(this._validator._stateFn) {
-            let validators=this.get('_validator.validators');
-            let states=this.get('_validator')._getStates(this._context);
-            let children=this._children.toArray();
-            this._children.clear();
+		} else {
 
-            let changed=false;
-            for(let propertyName in validators) {
-                if(states.indexOf(propertyName)>-1) {
-                    let observer = children.findBy('_validator',validators[propertyName]);
-                    if(observer) {
-                        this._children.push(observer);
-                        children.removeObject(observer);
-                    } else {
-                        this._observe(validators[propertyName]);
-                        changed=true;
-                    }
-                }
-            }
-            if(children.length) {
-                children.invoke('destroy');
-                children.clear();
-                changed=true;
-            }
+			let shouldRevalidate = false;
+			let stateValidators = [];
+			let children = Ember.A();
+			let target=this;
+			if(this._validator._stateFn) {
+				stateValidators.push(this._validator);
+				children.pushObjects(target._children);
+				target._children.clear();
+			} else if(this._validator._validatorArray) {
+				target=this._children[0];
+				this._validator._validatorArray.forEach((validator, index)=> {
+					if(validator._stateFn) {
+						stateValidators.push(validator);
+						children.pushObjects(target._children);
+						target._children.clear();
+					}
+				},this);
+			}
 
-            if(!changed || this._validator._revalidateOnStateChange===false) {
-                return;
-            }
-			// if(this._children) {
-			// 	this._children.forEach(function(child) {
-			// 		child.destroy();
-			// 	});
-			// 	this._children.clear();
-			// }
-			// if(this._validator._revalidateOnStateChange===false) {
-			// 	if(this._orgValue) {
-			// 		// We need to remove ourselve from the chain, otherwise observers won't be re-attched. Not sure whether "pop" is the way to go.
-			// 		this._chain.pop();
-			// 		// We re-observe to re-add children, but it seems we may "re-observe" ourselve as well like this.
-            //         this._detach();
-			// 		this._validator._observe(this);
-			// 	}
-			// 	return;
-			// }
+			for(let i=0; i<stateValidators.length; i++ ) {
+				let stateValidator = stateValidators[i];
+				let validators = stateValidator.get('validators');
+				let states = stateValidator._getStates(this._context);
+
+				let changed = false;
+				for (let propertyName in validators) {
+					if (states.indexOf(propertyName) > -1) {
+						let observer = children.findBy('_validator', validators[propertyName]);
+						if (observer) {
+							target._children.push(observer);
+							children.removeObject(observer);
+						} else {
+							target._observe(validators[propertyName]);
+							changed = true;
+						}
+					}
+				}
+				if (children.length) {
+					children.invoke('destroy');
+					children.clear();
+					changed = true;
+				}
+
+				if (changed || this._validator._revalidateOnStateChange === true) {
+					shouldRevalidate = true;
+				}
+			}
+
+            if(!shouldRevalidate) {
+				return;
+			}
 		}
+
 		
 		this._scheduled=Ember.run.scheduleOnce('actions',this,this._fnOnce,sender, key, value, rev);
 	},	
