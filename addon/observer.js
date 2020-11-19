@@ -72,6 +72,7 @@ var Observer = Ember.Object.extend({
 		var chain =this._chain.filter(chain => chain.target===this._target).filter(chain => chain.key===this._key);
 		if(chain.length!==0) {
 			if(chain.filter(chain => chain.validator===this._validator).length===0) {
+				this._orgValue=this._getValue();
 				this._validator._observe(this);
 			}
 		}
