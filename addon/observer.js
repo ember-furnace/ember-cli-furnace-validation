@@ -96,9 +96,8 @@ var Observer = Ember.Object.extend({
 			this._chain.splice(this._chain.indexOf(obj));
 		});
 
-        if(this._orgValue) {
-			Ember.removeObserver(this._target, this._key, this, this._fn);
-		}
+
+		Ember.removeObserver(this._target, this._key, this, this._fn);
 
         if(Ember.Array.detect(this._orgValue)) {
 			this._orgValue.removeArrayObserver(this);
@@ -107,9 +106,11 @@ var Observer = Ember.Object.extend({
 	},
 	
 	_detachKeys:function() {
-		if(Ember.Observable.detect(this._orgValue)) {
-			for(var i=0;i<this._keys.length;i++) {
-				Ember.removeObserver(this._orgValue,this._keys[i],this,this._fn);
+		if(this._keys.length) {
+			if (Ember.Observable.detect(this._orgValue)) {
+				for (var i = 0; i < this._keys.length; i++) {
+					Ember.removeObserver(this._orgValue, this._keys[i], this, this._fn);
+				}
 			}
 		}
 	},
@@ -291,6 +292,13 @@ var Observer = Ember.Object.extend({
 			}
 			if(this._keys.length) {
 				this._detachKeys();
+
+			}
+
+			// Re-attach if nullified
+			if(this._getValue()===null) {
+				this._detach();
+				this._attach();
 			}
 
 			this._orgValue=this._getValue();
@@ -314,6 +322,9 @@ var Observer = Ember.Object.extend({
 	},
 	
 	_fn: function(sender, key, value, rev){
+		if(this.isDestroyed) {
+			return;
+		}
 		// We need to run this later because of delay in ember-data relationship availablility. Better run it once as well.
 		if(this._debugLogging) {
 			this._logEvent('Observed change',sender.toString(),key);
