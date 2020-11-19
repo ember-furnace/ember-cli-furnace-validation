@@ -376,7 +376,7 @@ var Observer = Ember.Object.extend({
 					changed = true;
 				}
 
-				if (changed && this._validator._revalidateOnStateChange === true) {
+				if (changed && stateValidator._revalidateOnStateChange === true) {
 					shouldRevalidate = true;
 				}
 			}
