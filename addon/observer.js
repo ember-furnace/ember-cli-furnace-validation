@@ -47,6 +47,8 @@ var Observer = Ember.Object.extend({
 	_queue : null,
 
 	_scheduled: null,
+
+	_attached: false,
 	
 	init : function() {
 
@@ -96,8 +98,10 @@ var Observer = Ember.Object.extend({
 			this._chain.splice(this._chain.indexOf(obj));
 		});
 
-
-		Ember.removeObserver(this._target, this._key, this, this._fn);
+		if(this._attached) {
+			this._attached = false;
+			Ember.removeObserver(this._target, this._key, this, this._fn);
+		}
 
         if(Ember.Array.detect(this._orgValue)) {
 			this._orgValue.removeArrayObserver(this);
@@ -120,6 +124,7 @@ var Observer = Ember.Object.extend({
 			this._logEvent('Observing',this._target.toString(),this._key);
 		}
 		if(this._key) {
+			this._attached = true;
 			Ember.addObserver(this._target,this._key,this,this._fn);
 		}
 		if(Ember.Array.detect(this._getValue())) {
